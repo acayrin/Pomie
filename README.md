@@ -30,7 +30,7 @@ Alternatively Sakagiri can generates a quick single level leveling guide for you
 
 `` -s search|(string) [args] `` - search for an item (with arguments, if any)
 
-*For more details, please check* [the command list](https://github.com/Sakagiri/Wiki/blob/main/Commands.md)
+*For more details, please check* [the command list](Commands.md)
 
 <hr>
 
