@@ -1,0 +1,56 @@
+{
+    "name": "Sakagiri",
+    "version": "1.0.0",
+    "dbversion": "080521",
+    "engines": {
+        "node": "14.x",
+        "npm": "7.x"
+    },
+    "main": "src/Sakagiri.js",
+    "scripts": {
+        "start": "node --no-deprecation --max-old-space-size=1000 src/Sakagiri.js",
+        "dev": "node --no-deprecation --max-old-space-size=1000 -r dotenv/config src/Sakagiri.js"
+    },
+    "dependencies": {
+        "bluebird": "^3.7.2",
+        "bufferutil": "^4.0.3",
+        "chalk": "^4.1.1",
+        "discord.js-light": "^3.5.10",
+        "discord.js-rate-limiter": "^1.0.7",
+        "eval": "^0.1.6",
+        "express": "^4.17.1",
+        "fast-sort": "^3.0.2",
+        "ioredis": "^4.27.2",
+        "jquery": "^3.6.0",
+        "jsdom": "^16.5.3",
+        "jsonpack": "^1.1.5",
+        "lowdb": "^1.0.0",
+        "lz-string": "^1.4.4",
+        "node-fetch": "^2.6.1",
+        "node-sysstat": "^1.0.1",
+        "pidusage": "^2.0.21",
+        "utf-8-validate": "^5.0.5",
+        "zlib-sync": "^0.1.7"
+    },
+    "devDependencies": {
+        "dotenv": "^9.0.2",
+        "eslint": "^7.26.0"
+    },
+    "eslintConfig": {
+        "env": {
+            "commonjs": true,
+            "es2021": true,
+            "node": true,
+            "browser": true,
+            "es6": true
+        },
+        "extends": "eslint:recommended",
+        "parserOptions": {
+            "ecmaVersion": 12
+        },
+        "rules": {},
+        "globals": {
+            "process": true
+        }
+    }
+}
