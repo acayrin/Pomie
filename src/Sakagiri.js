@@ -1,7 +1,7 @@
-const express   = require('express')
-const app       = express()
-const Main = require('./Worker.Main')
-const Utils = require('./lib/Utils')
+const express = require('express')
+const app = express()
+const Main = require('./Workers/Main')
+const Utils = require('./Modules/Utils')
 
 app.get('*', (req, res) => res.sendStatus(200))
 
@@ -10,5 +10,5 @@ app.listen(process.env.PORT || 3000, () => {
     Utils.log(`Started webserver`, true)
 
     // start the bot
-    Main.start(require('./Config').MAX_THREADS)
+    Main.start()
 })

@@ -56,27 +56,6 @@ module.exports.time_format = time => {
 // ===================================== Format seconds to HH:mm:ss =====================================
 
 
-// ===================================== Check if URL =====================================
-/**
-@func isValidURL
-check if string is a valid URL
-
-@param {String} string string to check
-@return {boolean} boolean
-*/
-module.exports.isValidURL = string =>
-    string.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g)
-
-module.exports.shuffleArray = array => {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))[array[i], array[j]] = [array[j], array[i]]
-    }
-
-    return array
-}
-// ===================================== Check if URL =====================================
-
-
 // ===================================== Logger =====================================
 /**
 @func log
@@ -178,30 +157,8 @@ module.exports.filter = (a, fn) => {
  * @returns
  */
 module.exports.resolve = (callback, ms) =>
-    new Promise((resolve) => setTimeout(() => resolve(callback), ms ? ms : 50))
+    new Promise((resolve) => setTimeout(() => resolve(callback), ms ? ms : 25))
 // ===================================== Promise =====================================
-
-
-
-// ===================================== Node Unload =====================================
-/**
- * Deletes a node module and all associated children
- * from node require cache
- * @param {string} moduleName The name of the module or
- *                            absolute/relative path to it
- */
-module.exports.unload = (moduleName) => {
-    let solvedName = require.resolve(moduleName),
-        nodeModule = require.cache[solvedName]
-    if (nodeModule) {
-        for (let i = 0; i < nodeModule.children.length; i++) {
-            let child = nodeModule.children[i]
-            this.unload(child.filename)
-        }
-        delete require.cache[solvedName]
-    }
-}
-// ===================================== Node Unload =====================================
 
 
 

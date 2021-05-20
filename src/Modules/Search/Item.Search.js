@@ -1,8 +1,8 @@
 const Color = require('../ColorManager')
 const Emote = require('../EmoteHandler')
 const {
-    search
-} = require('../SubCommands/Search')
+    exec
+} = require('../Commands/Search')
 const Promise = require('bluebird')
 const Utils   = require('../Utils')
 
@@ -35,7 +35,7 @@ module.exports.process = async (item, _message, _page) => {
 
             for (let i = stats.length; --i >= 0;) {
                 if (stats[i].includes('Upgrade for')) {
-                    const xtal = Utils.filter(await Utils.resolve(search(null, `${stats[i].replace('Upgrade for', '').trim()} --type crysta`), 25), i => i.id !== item.id).shift()
+                    const xtal = Utils.filter(await Utils.resolve(exec(null, `${stats[i].replace('Upgrade for', '').trim()} --type crysta`), 25), i => i.id !== item.id).shift()
                     up_for     = `[${xtal.id}] **${xtal.name}** (${xtal.type})`
                 } else
                     res.push(`> + ${stats[i]}`)
@@ -46,7 +46,7 @@ module.exports.process = async (item, _message, _page) => {
         const uses = []
 
         for (let i = item.uses.length; --i >= 0;) {
-            const For = (await Utils.resolve(search(null, item.uses[i].for), 25)).shift()
+            const For = (await Utils.resolve(exec(null, item.uses[i].for), 25)).shift()
             if (For.type.includes('Crysta'))
                 up_to = `[${For.id}] **${For.name}** (${For.type})`
             else
@@ -92,7 +92,7 @@ module.exports.process = async (item, _message, _page) => {
                 item.recipe.materials[i].item.toLowerCase().includes('medicine'))
                 res.push(`> + **${item.recipe.materials[i].item}** (need ${item.recipe.materials[i].amount})`)
             else {
-                const item = (await Utils.resolve(search(null, item.recipe.materials[i].item), 25)).shift()
+                const item = (await Utils.resolve(exec(null, item.recipe.materials[i].item), 25)).shift()
                 res.push(`> + [${item.id}] **${item.name}** (${item.type}) (need ${item.recipe.materials[i].amount})`)
             }
         }
@@ -115,7 +115,7 @@ module.exports.process = async (item, _message, _page) => {
         if (item.drops.length > 10 && item.drops.length - _page * 10 < 0)
             res.push(`> You went a bit too far`)
         else for (let i = (_page * 10 > item.drops.length ? item.drops.length : _page * 10); --i >= (_page - 1) * 10;) {
-            const from  = (await Utils.resolve(search(null, item.drops[i].from), 25)).shift()
+            const from  = (await Utils.resolve(exec(null, item.drops[i].from), 25)).shift()
             const dyes  = []
             const codes = []
 

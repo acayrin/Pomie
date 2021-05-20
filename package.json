@@ -1,6 +1,6 @@
 {
     "name": "Sakagiri",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "dbversion": "080521",
     "engines": {
         "node": "14.x",
@@ -9,7 +9,7 @@
     "main": "src/Sakagiri.js",
     "scripts": {
         "start": "node --no-deprecation --max-old-space-size=1000 src/Sakagiri.js",
-        "dev": "node --no-deprecation --max-old-space-size=1000 -r dotenv/config src/Sakagiri.js"
+        "dev": "node --max-old-space-size=1000 -r dotenv/config src/Sakagiri.js"
     },
     "dependencies": {
         "bluebird": "^3.7.2",
@@ -35,22 +35,5 @@
     "devDependencies": {
         "dotenv": "^9.0.2",
         "eslint": "^7.26.0"
-    },
-    "eslintConfig": {
-        "env": {
-            "commonjs": true,
-            "es2021": true,
-            "node": true,
-            "browser": true,
-            "es6": true
-        },
-        "extends": "eslint:recommended",
-        "parserOptions": {
-            "ecmaVersion": 12
-        },
-        "rules": {},
-        "globals": {
-            "process": true
-        }
     }
 }
