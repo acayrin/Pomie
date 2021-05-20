@@ -54,7 +54,8 @@ module.exports = {
 
         if (regexID.test(search)) {
             let f = false
-            for (let i = list.length; --i >= 0;)
+            let i = list.length
+            while (--i)
                 if (list[i].id.toLowerCase() === search.match(regexID).shift().toLowerCase()) {
                     list = [list[i]]
                     f = true
