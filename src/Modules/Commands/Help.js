@@ -4,7 +4,7 @@ const config = require('../../Config')
 module.exports = {
     name: 'help',
     desc: 'Display help page',
-    exec (message) {
+    exec(message) {
         const embed = new Discord.MessageEmbed()
         .setColor(config.COLOR)
         .setTitle('ＳＡＫＡＧＩＲＩ')

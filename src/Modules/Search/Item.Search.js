@@ -6,8 +6,7 @@ const {
 const Promise = require('bluebird')
 const Utils   = require('../Utils')
 
-module.exports.process = async (item, _message, _page) => {
-    const message = _message
+module.exports.process = async (item, message, _page) => {
     const res     = []
 
     let base_atk  = undefined

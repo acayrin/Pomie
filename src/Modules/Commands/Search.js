@@ -1,16 +1,19 @@
 const fsort = require('fast-sort')
 const Utils = require('../Utils')
+let client  = undefined
 
 module.exports = {
     name: 'search',
     desc: 'Search for an in-game item',
     async exec(message, search) {
+        client = message ? message.client : client
+
         const regexID = /^(?:[a-z][0-9]+)[a-z0-9]*$/ig
         const _aa = search.match(/(?:[^\s"]+|"[^"]*")/g)
         let type = undefined
         let page = 1
         let filters = []
-        let list = message.client.database.get('Index')
+        let list = client.database.get('Index')
 
         if (Array.isArray(_aa))
             for (let i = _aa.length; --i >= 0;) {
@@ -50,15 +53,13 @@ module.exports = {
             }
 
         if (regexID.test(search)) {
-            let i = list.length
             let f = false
-            while(--i) {
+            for (let i = list.length; --i >= 0;)
                 if (list[i].id.toLowerCase() === search.match(regexID).shift().toLowerCase()) {
                     list = [list[i]]
                     f = true
                     break
                 }
-            }
             if (!f)
                 list = []
         }

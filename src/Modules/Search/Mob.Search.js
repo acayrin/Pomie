@@ -8,7 +8,7 @@ const Utils   = require('../Utils')
 
 module.exports.process = async (item, message) => {
     const res = []
-    const map = !item.map.toLowerCase().includes('event') ? (await Utils.resolve(exec(null, item.map), 25)).shift() : undefined
+    const map = !item.map.toLowerCase().includes('event') ? (await Utils.resolve(exec(message, item.map), 25)).shift() : undefined
 
     res.push(`> **${item.name}**`)
     res.push(`>  `)
@@ -26,7 +26,7 @@ module.exports.process = async (item, message) => {
     res.push(`> **Item drops** (${item.drops.length} total)`)
     res.push(`>  `)
     for (let i = item.drops.length; --i >= 0;) {
-        const drop = (await Utils.resolve(exec(null, item.drops[i].id), 25)).shift()
+        const drop = (await Utils.resolve(exec(message, item.drops[i].id), 25)).shift()
 
         const dyes = []
         let codes  = []
