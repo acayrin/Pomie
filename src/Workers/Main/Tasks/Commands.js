@@ -6,12 +6,12 @@ module.exports = {
     exec() {
         setInterval(() => {
             const wkrs = db.get('Workers')
-            const cmds = db.get('Commands')
+            const cmds = db.get('Queue')
             const worker = wkrs[Math.floor(Math.random() * wkrs.length)]
 
             if (worker && cmds.length > 0) {
                 worker.postMessage(cmds.shift())
-                db.set('Commands', cmds)
+                db.set('Queue', cmds)
             }
         }, 50)
     }

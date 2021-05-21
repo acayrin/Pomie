@@ -19,11 +19,16 @@ module.exports = {
             client.commands.set(_cmd.name, _cmd)
         }
 
+        const emotes = []
+        for (let g of await client.guilds.fetch(false))
+            for (let e of await g[1].emojis.fetch(false))
+                emotes.push(e[1])
+        client.database.set('Emojis', emotes)
         client.database.set('Index', JSON.parse(await (await nf('https://kohri-api.vercel.app/database?search=*')).text()))
         client.database.set('lastUsed', Date.now())
+        client.database.set('active', true)
 
         parentPort.postMessage({ active: true })
-        client.database.set('active', true)
         u.log(`Mini is online - took ${((Date.now() - timer) / 1000).toFixed(2)}s`)
     }
 }

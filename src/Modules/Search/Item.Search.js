@@ -34,7 +34,7 @@ module.exports.process = async (item, message, _page) => {
 
             for (let i = stats.length; --i >= 0;) {
                 if (stats[i].includes('Upgrade for')) {
-                    const xtal = Utils.filter(await Utils.resolve(exec(null, `${stats[i].replace('Upgrade for', '').trim()} --type crysta`), 25), i => i.id !== item.id).shift()
+                    const xtal = Utils.filter(await Utils.resolve(exec(null, `${stats[i].replace('Upgrade for', '').trim()} --type crysta`)), i => i.id !== item.id).shift()
                     up_for     = `[${xtal.id}] **${xtal.name}** (${xtal.type})`
                 } else
                     res.push(`> + ${stats[i]}`)
@@ -45,7 +45,7 @@ module.exports.process = async (item, message, _page) => {
         const uses = []
 
         for (let i = item.uses.length; --i >= 0;) {
-            const For = (await Utils.resolve(exec(null, item.uses[i].for), 25)).shift()
+            const For = (await Utils.resolve(exec(null, item.uses[i].for))).shift()
             if (For.type.includes('Crysta'))
                 up_to = `[${For.id}] **${For.name}** (${For.type})`
             else

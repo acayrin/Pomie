@@ -1,20 +1,15 @@
 const c = require('../Config')
 const Discord = require('discord.js-light')
 const client = new Discord.Client({
-    // limit message cache size
     messageCacheMaxSize: 50,
-    // limit message ttl
-    messageCacheLifetime: 10,
-    // clean up every 5 min
-    messageSweepInterval: 10,
-    // edit history
-    messageEditHistoryMaxSize: 10,
-    // only cache guilds and emotes
+    messageCacheLifetime: 3,
+    messageSweepInterval: 3,
+    messageEditHistoryMaxSize: 0,
     cacheGuilds: true,
     cacheChannels: false,
-    cacheOverwrites: true,
+    cacheOverwrites: false,
     cacheRoles: false,
-    cacheEmojis: true,
+    cacheEmojis: false,
     cachePresences: false,
     disabledEvents: [
         'messageUpdate',

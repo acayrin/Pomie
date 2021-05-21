@@ -13,8 +13,8 @@ module.exports = {
             return
 
         if (limit.take(message.author.id))
-            return message.channel.send('I can only help you once every 5 seconds, please be patient')
+            return message.channel.send('Help only available once every 5 seconds')
 
-        db.set('Commands', db.get('Commands').concat(utils.zip(JSON.stringify(message))))
+        db.set('Queue', db.get('Queue').concat(utils.zip(JSON.stringify(message))))
     }
 }

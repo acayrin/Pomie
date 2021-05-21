@@ -3,6 +3,7 @@ const jq = require('jquery')
 const {
     JSDOM
 } = require('jsdom')
+const utils = require('../Utils')
 let CurrentID = undefined
 
 module.exports = {

@@ -30,18 +30,18 @@ module.exports = {
                 }
                 // filter item type
                 if (_aa.indexOf("--type") !== -1) {
-                    type = _aa[_aa.indexOf('--type') + 1].replace(/"/g, "")
+                    type = _aa[_aa.indexOf('--type') + 1].replace(/"+/, "")
                     _aa.splice(_aa.indexOf('--type'), 2)
                     search = _aa.join(' ')
                 }
                 if (_aa.indexOf("-t") !== -1) {
-                    type = _aa[_aa.indexOf('-t') + 1].replace(/"/g, "")
+                    type = _aa[_aa.indexOf('-t') + 1].replace(/"+/, "")
                     _aa.splice(_aa.indexOf('-t'), 2)
                     search = _aa.join(' ')
                 }
                 // filter item stats
                 if (_aa.indexOf("--filter") !== -1) {
-                    filters = _aa[_aa.indexOf('--filter') + 1].replace(/"/g, "").split(";")
+                    filters = _aa[_aa.indexOf('--filter') + 1].replace(/"+/, "").split(";")
                     _aa.splice(_aa.indexOf('--filter'), 2)
                     search = _aa.join(' ')
                 }
@@ -74,7 +74,7 @@ module.exports = {
         if (!message)
             return list
         if (list.length === 0)
-            return message.channel.send('Nothing was found in the book')
+            return message.channel.send('Nothing but dust')
 
         let res = []
         if (list.length > 1) {
@@ -85,7 +85,7 @@ module.exports = {
             }])
 
             if ((page - 1) * 20 > list.length)
-                return message.channel.send(`Hmmm.., I don't remember reading this page before`)
+                return message.channel.send(`Page does not exist`)
 
             res.push(`> Results **${(page - 1) * 20 + 1}** to **${page * 20 > list.length ? list.length : page * 20}** of **${list.length}** (page **${page}** of **${Math.ceil(list.length / 20) === 0 ? 1 : Math.ceil(list.length / 20)}**)`)
             res.push('>  ')

@@ -1,19 +1,14 @@
-const config = require('../Config')
+const config = require('../Config') 
+const fs = require('fs')
 const Discord = require('discord.js-light')
 const client = new Discord.Client({
-    // limit message cache size
     messageCacheMaxSize: 300,
-    // limit message ttl
-    messageCacheLifetime: 10,
-    // clean up every 5 min
-    messageSweepInterval: 10,
-    // edit history
-    messageEditHistoryMaxSize: 10,
-    // only cache guilds and emotes
+    messageCacheLifetime: 3,
+    messageSweepInterval: 3,
+    messageEditHistoryMaxSize: 0,
     cacheGuilds: true,
-    // cacheChannels: false
     cacheOverwrites: false,
-    cacheRoles: true,
+    cacheRoles: false,
     cacheEmojis: false,
     cachePresences: false,
     disabledEvents: [
@@ -49,14 +44,13 @@ const client = new Discord.Client({
         }
     }
 })
-const fs = require('fs')
 
 module.exports = {
     client,
     start() {
         client.database = new Discord.Collection()
         client.database.set('Workers', [])
-        client.database.set('Commands', [])
+        client.database.set('Queue', [])
 
         for (let e of fs.readdirSync(__dirname + '/Main/Events')) {
             const ev = require(__dirname + '/Main/Events/' + e)
@@ -64,11 +58,11 @@ module.exports = {
             if (Array.isArray(ev.name))
                 for (let n of ev.name)
                     ev.process ? 
-                        process.on(n, () => ev.exec(client)) :
+                        process.on(n, () => ev.exec()) :
                         client.on(n, a => ev.exec(a))
             else
                 ev.process ? 
-                    process.on(ev.name, () => ev.exec(client)):
+                    process.on(ev.name, () => ev.exec()):
                     client.on(ev.name, a => ev.exec(a))
         }
 
