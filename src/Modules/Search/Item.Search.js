@@ -37,15 +37,21 @@ module.exports.process = async (item, message, _page) => {
         }
     }
     if (item.uses.length > 0) {
-        res.push(`> ~~                                   ~~`)
-        res.push(`> **Used for**`)
-        res.push(`>  `)
         for (let use of item.uses) {
             const _f = (await exec(null, use.for)).shift()
-            if (_f.type.includes('Crysta'))
+            if (_f.type.includes('Crysta')) {
                 up_to = `[${_f.id}] **${_f.name}** (${_f.type})`
-            else
+                item.uses.splice(item.uses.indexOf(use), 1)
+            }
+        }
+        if (item.uses.length > 0) {
+            res.push(`> ~~                                   ~~`)
+            res.push(`> **Used for**`)
+            res.push(`>  `)
+            for (let use of item.uses) {
+                const _f = (await exec(null, use.for)).shift()
                 res.push(`> [${_f.id}] **${_f.name}** (${_f.type}) (need ${use.amount})`)
+            }
         }
     }
     if (up_to || up_for) {
