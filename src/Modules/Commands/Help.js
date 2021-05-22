@@ -15,7 +15,7 @@ module.exports = {
         .addField(`Use`, `\`\` ${config.MAIN_PREFIX} <command> \`\``)
         .addField(`Commands`, `\u200B`)
 
-        for (let _c of message.client.commands.keys()) {
+        for (const _c of message.client.commands.keys()) {
             const c = message.client.commands.get(_c)
             if (c.name && !c.hidden)
                 embed.addField(`\`\`${c.name}${c.short ? `|${c.short}` : ''}\`\``, c.desc, true)

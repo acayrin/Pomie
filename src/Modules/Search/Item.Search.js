@@ -31,7 +31,7 @@ module.exports.process = async (item, message, _page) => {
         res.push(`> ~~                                   ~~`)
         res.push(`> **Item stats**`)
         res.push(`>  `)
-        for (let stat of item.stats) {
+        for (const stat of item.stats) {
             if (stat.includes('Base Stability'))
                 base_stab = stat.match(/\d+/g).shift()
 
@@ -55,7 +55,7 @@ module.exports.process = async (item, message, _page) => {
 
     // item uses
     if (item.uses.length > 0) {
-        for (let use of item.uses) {
+        for (const use of item.uses) {
             const _f = (await exec(null, use.for)).shift()
             if (_f.type.includes('Crysta')) {
                 up_to = `[${_f.id}] **${_f.name}** (${_f.type})`
@@ -66,7 +66,7 @@ module.exports.process = async (item, message, _page) => {
             res.push(`> ~~                                   ~~`)
             res.push(`> **Used for**`)
             res.push(`>  `)
-            for (let use of item.uses) {
+            for (const use of item.uses) {
                 const _f = (await exec(null, use.for)).shift()
                 res.push(`> [${_f.id}] **${_f.name}** (${_f.type}) (need ${use.amount})`)
             }
@@ -99,7 +99,7 @@ module.exports.process = async (item, message, _page) => {
         res.push(`> Difficulty ${item.recipe.difficulty}`)
         res.push(`> Materials:`)
         res.push(`>  `)
-        for (let mat of item.recipe.materials) {
+        for (const mat of item.recipe.materials) {
             if (mat.item.toLowerCase().includes('mana') ||
                 mat.item.toLowerCase().includes('wood') ||
                 mat.item.toLowerCase().includes('cloth') ||
@@ -135,7 +135,7 @@ module.exports.process = async (item, message, _page) => {
 
         if (item.drops.length > 10 && item.drops.length - _page * 10 < 0)
             res.push(`> You went a bit too far`)
-            
+
         else
             for (let i = (_page * 10 > item.drops.length ? item.drops.length : _page * 10); --i >= (_page - 1) * 10;) {
                 const from = (await exec(null, item.drops[i].from)).shift()
@@ -144,7 +144,7 @@ module.exports.process = async (item, message, _page) => {
                 const c = []
 
                 if (item.drops[i].dyes.length > 0)
-                    for (let dye of item.drops[i].dyes) {
+                    for (const dye of item.drops[i].dyes) {
                         const code = Color.bestColor(dye)
                         d.push(Emote.findEmote(`:${code}:`))
                         c.push(code.replace(/_/g, ''))
@@ -156,9 +156,9 @@ module.exports.process = async (item, message, _page) => {
                     else
                         l.push(`[${item.drops[i].from}]`)
 
-                    if (dyes.length > 0)
+                    if (d.length > 0)
                         l.push(`(${d.join('')} - ${c.join(':')})`)
-                        
+
                     res.push(`> ${l.join(' ')}`)
 
                 } else

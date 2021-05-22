@@ -2,7 +2,7 @@ const config = require('../../Config')
 
 module.exports = {
     async exec(message) {
-        let hook = (await message.channel.fetchWebhooks()).find(h => h.name === config.NAME)
+        const hook = (await message.channel.fetchWebhooks()).find(h => h.name === config.NAME)
 
         if (hook)
             // delete hook

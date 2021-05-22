@@ -11,13 +11,13 @@ module.exports.process = async (item, message) => {
     res.push(`> ~~                                   ~~`)
     res.push(`> **Monsters** (${item.mobs.length} total)`)
     res.push(`>  `)
-    for (let mob of item.mobs) {
+    for (const mob of item.mobs) {
         const m = (await exec(null, `${mob} -t monster;miniboss;boss`)).shift()
 
         if (m)
-            res.push(`[${m.id}] **${m.name}** (${m.type})`)
+            res.push(`> [${m.id}] **${m.name}** (${m.type})`)
         else
-            res.push(`**${mob}**`)
+            res.push(`> **${mob}**`)
     }
 
     message.channel.send(res.join('\n'))

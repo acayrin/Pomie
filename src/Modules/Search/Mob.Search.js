@@ -33,26 +33,26 @@ module.exports.process = async (item, message) => {
     res.push(`> ~~                                   ~~`)
     res.push(`> **Item drops** (${item.drops.length} total)`)
     res.push(`>  `)
-    for (let drop of item.drops) {
-        const d = (await exec(null, drop.id)).shift()
+    for (const drop of item.drops) {
+        const e = (await exec(null, drop.id)).shift()
         const l = []
         const d = []
         const c = []
 
         if (drop.dyes.length > 0)
-            for (let dye of drop.dyes) {
+            for (const dye of drop.dyes) {
                 const code = Color.bestColor(dye)
                 d.push(Emote.findEmote(`:${code}:`))
                 c.push(code.replace(/_/g, ''))
             }
 
-        if (d)
-            l.push(`[${d.id}] **${d.name}** (${d.type})`)
+        if (e)
+            l.push(`[${e.id}] **${e.name}** (${e.type})`)
         else
             l.push(`**${drop.name}**`)
-            
-        if (dyes.length > 0)
-            l.push(`(${dyes.join('')} - ${codes.join(':')})`)
+
+        if (d.length > 0)
+            l.push(`(${d.join('')} - ${c.join(':')})`)
 
         res.push(`> ${l.join(' ')}`)
     }

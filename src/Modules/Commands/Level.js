@@ -7,16 +7,17 @@ module.exports = {
     short: 'lvl',
     async exec(message, args) {
         const _user = message.author
-        const fetch = JSON.parse(await (await nf(cf.API_URL + '/level?get=' + args)).text())
+        const fetch = JSON.parse(await (await nf(`${cf.API_URL}/level?get=${args}`)).text())
         const res = []
         const chk = []
 
         res.push(`Exp required for ${fetch.s_lvl} > ${fetch.d_lvl}: ${fetch.t_exp}`)
-        fetch.b_exp && res.push(`Exp bonus +${fetch.b_exp}%`)
+        if (fetch.b_exp)
+            res.push(`Exp bonus +${fetch.b_exp}%`)
 
         switch (fetch.type) {
             case 1: {
-                for (let i of fetch.list) {
+                for (const i of fetch.list) {
                     res.push(` `)
                     res.push(`[${i.id}] ${i.name}`)
                     res.push(` ├── Level ${i.level} - ${i.type}`)
@@ -26,7 +27,7 @@ module.exports = {
                 break
             }
             case 2: {
-                for (let i of fetch.list) {
+                for (const i of fetch.list) {
                     res.push(` `)
                     res.push(`[Phase #${fetch.list.indexOf(i) + 1}] ${i.s_lvl} > ${i.d_lvl} (+${i.b_exp || fetch.b_exp}%)`)
                     res.push(` │`)
@@ -56,7 +57,7 @@ module.exports = {
                         res.length = 0
                     }
                 }
-                for (let c of chk)
+                for (const c of chk)
                     fetch.pm ?
                         message.author.send(`\`\`\`JSON\n${c}\`\`\``) :
                         message.channel.send(`${_user}\`\`\`JSON\n${c}\`\`\``)

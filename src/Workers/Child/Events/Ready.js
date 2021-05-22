@@ -1,4 +1,4 @@
-const timer = Date.now() 
+const timer = Date.now()
 const fs = require('fs')
 const nf = require('node-fetch')
 const u = require('../../../Modules/Utils')

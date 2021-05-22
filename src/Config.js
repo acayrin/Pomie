@@ -1,7 +1,7 @@
 module.exports = {
     // credentials
     DISCORD_BOT_TOKEN    : process.env.DISCORD_BOT_TOKEN,
-        
+
     // bot options
     NAME                 : require('../package.json').name,
     COLOR                : '#c91417',

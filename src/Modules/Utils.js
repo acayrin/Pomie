@@ -65,16 +65,21 @@ pretty log to console
 @param {boolean} _isConsole show as CONSOLE instead of DISCORD
 */
 module.exports.log = (string, _isConsole) => {
-    // specifically GMT+7
     const options = {
-        timeZone: 'Asia/Bangkok',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric'
-    },
+            timeZone: 'Asia/Bangkok',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric'
+        },
         formatter = new Intl.DateTimeFormat([], options)
-    const msg = `${chalk.magentaBright(`[${_isConsole ? 'Console' : 'Discord'} - ${formatter.format(new Date())}]`)} ${chalk.yellowBright(`[${isMainThread ? 'Main' : `Mini #${threadId}`}]`)} ${string}`
-    console.log(msg)
+
+    const x = _isConsole ? 'Console' : 'Discord'
+    const t = formatter.format(new Date())
+    const e = isMainThread ? 'Main' : `Mini #${threadId}`
+
+    const a = chalk.magentaBright(`[${x} - ${t}]`)
+    const b = chalk.yellowBright(`[${e}]`)
+    console.log(`${a} ${b} ${string}`)
 }
 // ===================================== Logger =====================================
 
@@ -98,27 +103,27 @@ module.exports.jsonDiff = (_a, _b) => {
         // if target json doesn't have this json key
         if (_a[_pp] && !_b[_pp] || !_a[_pp] && _b[_pp])
             return 1
-        // if both keys are Arrays
-        else if (Array.isArray(_a[_pp]) && Array.isArray(_b[_pp]))
-            // Arrays are different in size
-            if (_a[_pp].length !== _b[_pp].length)
-                return 3
-            else
-                // loop
-                for (let _xx of _a[_pp])
-                    // if target Array doesn't have one of this Json
-                    _b[_pp].map(b => {
-                        if (_xx.constructor === Object && b.constructor === Object)
-                            return this.jsonDiff(_xx, b)
-                        else if (_xx !== b)
-                            return 4
-                    })
-        // if both are json, redo the script
-        else if (_a[_pp].constructor === Object && _b[_pp].constructor === Object)
-            return this.jsonDiff(_a[_pp], _b[_pp])
-        // if target key is different
-        else if (_a[_pp] !== _b[_pp])
-            return 2
+    // if both keys are Arrays
+    else if (Array.isArray(_a[_pp]) && Array.isArray(_b[_pp]))
+        // Arrays are different in size
+        if (_a[_pp].length !== _b[_pp].length)
+            return 3
+    else
+        // loop
+        for (let _xx of _a[_pp])
+            // if target Array doesn't have one of this Json
+            _b[_pp].map(b => {
+                if (_xx.constructor === Object && b.constructor === Object)
+                    return this.jsonDiff(_xx, b)
+                else if (_xx !== b)
+                    return 4
+            })
+    // if both are json, redo the script
+    else if (_a[_pp].constructor === Object && _b[_pp].constructor === Object)
+        return this.jsonDiff(_a[_pp], _b[_pp])
+    // if target key is different
+    else if (_a[_pp] !== _b[_pp])
+        return 2
 
     return undefined
 }

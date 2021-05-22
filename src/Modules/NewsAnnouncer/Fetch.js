@@ -8,15 +8,15 @@ module.exports = {
     async exec(client) {
         // get lastest new with its id/title/url
         let $ = jq(new JSDOM((await (await nf(`http://en.toram.jp/information/?type_code=all`)).text())).window)
-        let first = $("div.useBox > ul").children('li').first()
-        let time = first.find('time').first().text()
-        let url = 'https://en.toram.jp' + first.find('a').first().attr('href')
-        let id = Number(url.match(/\d+/).pop())
-        let title = first.text().replace(/\t/g, '').replace(/\n/g, ' ').replace(time, '').trim()
+        const first = $("div.useBox > ul").children('li').first()
+        const time = first.find('time').first().text()
+        const url = 'https://en.toram.jp' + first.find('a').first().attr('href')
+        const id = Number(url.match(/\d+/).pop())
+        const title = first.text().replace(/\t/g, '').replace(/\n/g, ' ').replace(time, '').trim()
 
         // get the news content
         $ = jq(new JSDOM((await (await nf(`http://en.toram.jp/information/detail/?information_id=${id}`)).text())).window)
-        let content = $("div.useBox.newsBox")
+        const content = $("div.useBox.newsBox")
         content.children('div.smallTitleLine').remove()
         content.children('script').remove()
         content.children('.subtitle').each(function () {
@@ -51,15 +51,15 @@ module.exports = {
                         if (ch.type !== 'text' || !G.me.hasPermission("MANAGE_WEBHOOKS"))
                             return
 
-                        let hook = (await ch.fetchWebhooks()).find(hk => hk.owner && hk.owner.id === client.user.id)
+                        const hook = (await ch.fetchWebhooks()).find(hk => hk.owner && hk.owner.id === client.user.id)
 
                         if (hook) {
-                            let res = []
-                            let lines = content.text().replace(/\n\n+/g, '\n\n').replace(/\t/g, '').trim().split('\n')
+                            const res = []
+                            const lines = content.text().replace(/\n\n+/g, '\n\n').replace(/\t/g, '').trim().split('\n')
                             res.push(`> **${title}**`)
                             res.push(`>  `)
 
-                            for (let line of lines)
+                            for (const line of lines)
                                 if (res.join('\n').length + line.length > 1950) {
                                     hook.send(res.join('\n'))
                                     res.length = 0

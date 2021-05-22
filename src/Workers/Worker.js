@@ -17,7 +17,7 @@ module.exports = {
             maxOldGenerationSizeMb: 200
         })
         Utils.log(chalk.green(`+ Spawned Mini #${child.threadId}`))
-        
+
         child.on('error', err => {
             Utils.log(chalk.red(`- Mini #${child.threadId} died (Error: ${err.message})`))
             console.log(err)
@@ -26,7 +26,7 @@ module.exports = {
 
             this.spawn()
         })
-        
+
         child.on('message', (e) => {
             if (DB.get('Workers').indexOf(child) === -1 && e.active)
                 DB.set('Workers', DB.get('Workers').concat(child))
@@ -42,9 +42,9 @@ module.exports = {
 
                 const ID = child.threadId
                 Utils.log(chalk.yellow(`Mini #${child.threadId} hasn't been used in ${e.timeout} seconds, terminating it`))
-                
+
                 DB.set('Workers', Utils.filter(DB.get('Workers'), wkr => wkr !== child))
-                
+
                 child.terminate().then(() => {
                     Utils.log(chalk.red(`- Mini #${ID} has been terminated`))
                 })

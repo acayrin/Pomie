@@ -12,9 +12,9 @@ module.exports = {
         let type = undefined
         let page = 1
         let filters = []
-        
+
         const _aa = search.match(regexAR)
-        for (let _a of _aa) {
+        for (const _a of _aa) {
             const _v = _aa[_aa.indexOf(_a) + 1]
             switch (_a) {
                 case '-p':
@@ -60,7 +60,7 @@ module.exports = {
         if (list.length === 0)
             return message.channel.send('Nothing but dust')
 
-        let res = []
+        const res = []
         if (list.length > 1) {
             list = fsort.inPlaceSort(list).by([{
                 asc: i => i.id.length
@@ -71,8 +71,13 @@ module.exports = {
             if ((page - 1) * 20 > list.length)
                 return message.channel.send(`Page does not exist`)
 
-            res.push(`> Results **${(page - 1) * 20 + 1}** to **${page * 20 > list.length ? list.length : page * 20}** of **${list.length}** (page **${page}** of **${Math.ceil(list.length / 20) === 0 ? 1 : Math.ceil(list.length / 20)}**)`)
+            const cur_view = page * 20 > list.length ? list.length : page * 20
+            const cur_page = (page - 1) * 20 + 1
+            const max_page = Math.ceil(list.length / 20) === 0 ? 1 : Math.ceil(list.length / 20)
+
+            res.push(`> Results **${cur_page}** to **${cur_view}** of **${list.length}** (page **${page}** of **${max_page}**)`)
             res.push('>  ')
+
             if (type)
                 res.push(`> Filter type **${type}**`)
             if (filters.length > 0)
@@ -80,7 +85,7 @@ module.exports = {
             if (type || filters.length > 0)
                 res.push(`>  `)
 
-            let each = new Map()
+            const each = new Map()
             for (let i = page * 20; --i >= (page - 1) * 20;) {
                 const _i = list[i]
                 if (!_i)
@@ -91,16 +96,16 @@ module.exports = {
                 each.set(_i.type, each.get(_i.type).concat(_i))
             }
 
-            for (let t of each.keys()) {
+            for (const t of each.keys()) {
                 res.push(`> ~~                ~~ **${t}** ~~                ~~`)
-                for (let i of each.get(t))
+                for (const i of each.get(t))
                     res.push(`> [${i.id}] > **${i.name}**`)
             }
 
             return message.channel.send(res.join('\n'))
         }
 
-        let item = list.shift()
+        const item = list.shift()
         if (item.id.includes('T')) return require('../Search/Item.Search').process(item, message, page)
         if (item.id.includes('E')) return require('../Search/Mob.Search').process(item, message)
         if (item.id.includes('M')) return require('../Search/Map.Search').process(item, message)

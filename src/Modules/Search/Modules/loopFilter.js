@@ -17,7 +17,7 @@ module.exports.loopFilter = (filters, list) => {
                     return Eval(`module.exports = () => { return ${item.proc.match(/\d+/)} ${compare} ${value} }`)()
 
             } else if (item.stats && item.stats.length > 0)
-                for (let stat of item.stats) {
+                for (const stat of item.stats) {
                     if (!/\d+/g.test(stat))
                         continue
                     const _val  = stat.match(/-?\d+/g).pop()
@@ -33,9 +33,9 @@ module.exports.loopFilter = (filters, list) => {
 }
 
 const getType = (string) => {
-    for (let mat of ['beast', 'metal', 'cloth', 'mana', 'wood', 'medicine'])
+    let m = undefined
+    for (const mat of ['beast', 'metal', 'cloth', 'mana', 'wood', 'medicine'])
         if (string.includes(mat))
-            return mat
-        else
-            return undefined
+            m = mat
+    return m
 }

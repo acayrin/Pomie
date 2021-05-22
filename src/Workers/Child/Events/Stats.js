@@ -13,7 +13,7 @@ module.exports = {
     exec() {
         sysstat.on('stats', (stats) => {
             const db = require('../../Child')._bot().database
-            
+
             if (db && db.get('active')) {
                 parentPort.postMessage({
                     stats: stats,

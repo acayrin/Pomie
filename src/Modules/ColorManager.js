@@ -3,14 +3,15 @@ const fs = require('lowdb/adapters/FileSync')
 const db = require('lowdb')(new fs('./src/DB.json'))
 const colors = db.get('colors').value()
 
-for (let i = colors.length; --i >= 0;)
+let i = colors.length
+while (--i >= 0)
     Color.set(colors[i].code, colors[i].color)
 
 module.exports = {
     bestColor(hex) {
         let diff = 0
         let code = '0_'
-        for (let color of Color.keys()) {
+        for (const color of Color.keys()) {
             const _diff = this.hexColorDelta(Color.get(color), hex)
             if (_diff > diff) {
                 diff = _diff

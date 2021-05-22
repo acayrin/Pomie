@@ -1,6 +1,6 @@
 module.exports.loopType = (type, list) => {
     const _list = []
-    
+
     for (let _type of type.split(";")) {
         _type   = _type.trim()
 

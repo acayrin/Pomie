@@ -1,4 +1,4 @@
-const config = require('../Config') 
+const config = require('../Config')
 const fs = require('fs')
 const Discord = require('discord.js-light')
 const client = new Discord.Client({
@@ -57,13 +57,13 @@ module.exports = {
 
             if (Array.isArray(ev.name))
                 for (let n of ev.name)
-                    ev.process ? 
-                        process.on(n, (e) => ev.exec(e)) :
-                        client.on(n, a => ev.exec(a))
+                    ev.process ?
+                    process.on(n, (v) => ev.exec(v)) :
+                    client.on(n, a => ev.exec(a))
             else
-                ev.process ? 
-                    process.on(ev.name, (e) => ev.exec(e)):
-                    client.on(ev.name, a => ev.exec(a))
+                ev.process ?
+                process.on(ev.name, (v) => ev.exec(v)) :
+                client.on(ev.name, a => ev.exec(a))
         }
 
         for (let e of fs.readdirSync(__dirname + '/Main/Tasks'))
