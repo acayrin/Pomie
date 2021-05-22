@@ -49,7 +49,7 @@ module.exports = {
     }
 }
 
-for (let e of fs.readdirSync(__dirname + '/Child/Events')) {
+for (const e of fs.readdirSync(__dirname + '/Child/Events')) {
     const ev = require(__dirname + '/Child/Events/' + e)
 
     if (ev.type === 0)

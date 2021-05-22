@@ -17,7 +17,7 @@ module.exports.uniq_fast = a => {
     const out = []
     let j = 0
 
-    for (let item of a) {
+    for (const item of a) {
         if (seen[item] !== 1) {
             seen[item] = 1
             out[j++] = item
@@ -99,7 +99,7 @@ module.exports.jsonDiff = (_a, _b) => {
         return 0
 
     // loop
-    for (let _pp of Object.keys(_a))
+    for (const _pp of Object.keys(_a))
         // if target json doesn't have this json key
         if (_a[_pp] && !_b[_pp] || !_a[_pp] && _b[_pp])
             return 1
@@ -110,7 +110,7 @@ module.exports.jsonDiff = (_a, _b) => {
             return 3
     else
         // loop
-        for (let _xx of _a[_pp])
+        for (const _xx of _a[_pp])
             // if target Array doesn't have one of this Json
             _b[_pp].map(b => {
                 if (_xx.constructor === Object && b.constructor === Object)

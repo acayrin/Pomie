@@ -15,14 +15,14 @@ module.exports = {
         client.commands = new Discord.Collection()
         client.database = new Discord.Collection()
 
-        for (let _f of fs.readdirSync(__dirname + '/../../../Modules/Commands')) {
+        for (const _f of fs.readdirSync(__dirname + '/../../../Modules/Commands')) {
             const _cmd = require('../../../Modules/Commands/' + _f)
             client.commands.set(_cmd.name, _cmd)
         }
 
         const emotes = []
-        for (let g of await client.guilds.fetch(false))
-            for (let e of await g[1].emojis.fetch(false))
+        for (const g of await client.guilds.fetch(false))
+            for (const e of await g[1].emojis.fetch(false))
                 emotes.push(e[1])
         client.database.set('Emojis', emotes)
         client.database.set('Index', JSON.parse(await (await nf(c.API_URL + '/database?search=*')).text()))

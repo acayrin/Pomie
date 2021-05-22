@@ -52,21 +52,21 @@ module.exports = {
         client.database.set('Workers', [])
         client.database.set('Queue', [])
 
-        for (let e of fs.readdirSync(__dirname + '/Main/Events')) {
+        for (const e of fs.readdirSync(__dirname + '/Main/Events')) {
             const ev = require(__dirname + '/Main/Events/' + e)
 
             if (Array.isArray(ev.name))
-                for (let n of ev.name)
+                for (const n of ev.name)
                     ev.process ?
-                    process.on(n, (v) => ev.exec(v)) :
-                    client.on(n, a => ev.exec(a))
+                        process.on(n, (v) => ev.exec(v)) :
+                        client.on(n, a => ev.exec(a))
             else
                 ev.process ?
-                process.on(ev.name, (v) => ev.exec(v)) :
-                client.on(ev.name, a => ev.exec(a))
+                    process.on(ev.name, (v) => ev.exec(v)) :
+                    client.on(ev.name, a => ev.exec(a))
         }
 
-        for (let e of fs.readdirSync(__dirname + '/Main/Tasks'))
+        for (const e of fs.readdirSync(__dirname + '/Main/Tasks'))
             require(__dirname + '/Main/Tasks/' + e).exec(client)
 
         client.login(config.DISCORD_BOT_TOKEN)
