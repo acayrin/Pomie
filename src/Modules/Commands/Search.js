@@ -1,61 +1,46 @@
+const client = require('../../Workers/Child')._bot()
 const fsort = require('fast-sort')
 const Utils = require('../Utils')
-let client  = undefined
+const regexID = /^(?:[a-z][0-9]+)[a-z0-9]*$/ig
+const regexAR = /(?:[^\s"]+|"[^"]*")/g
 
 module.exports = {
     name: 'search',
     desc: 'Search for an in-game item',
     async exec(message, search) {
-        client = message ? message.client : client
-
-        const regexID = /^(?:[a-z][0-9]+)[a-z0-9]*$/ig
-        const _aa = search.match(/(?:[^\s"]+|"[^"]*")/g)
+        let list = client.database.get('Index')
         let type = undefined
         let page = 1
         let filters = []
-        let list = client.database.get('Index')
-
-        if (Array.isArray(_aa))
-            for (let i = _aa.length; --i >= 0;) {
-                // results page
-                if (_aa.indexOf("--page") !== -1) {
-                    page = Number(_aa[_aa.indexOf('--page') + 1])
-                    _aa.splice(_aa.indexOf('--page'), 2)
-                    search = _aa.join(' ')
-                }
-                if (_aa.indexOf("-p") !== -1) {
-                    page = Number(_aa[_aa.indexOf('-p') + 1])
-                    _aa.splice(_aa.indexOf('-p'), 2)
-                    search = _aa.join(' ')
-                }
-                // filter item type
-                if (_aa.indexOf("--type") !== -1) {
-                    type = _aa[_aa.indexOf('--type') + 1].replace(/"+/, "")
-                    _aa.splice(_aa.indexOf('--type'), 2)
-                    search = _aa.join(' ')
-                }
-                if (_aa.indexOf("-t") !== -1) {
-                    type = _aa[_aa.indexOf('-t') + 1].replace(/"+/, "")
-                    _aa.splice(_aa.indexOf('-t'), 2)
-                    search = _aa.join(' ')
-                }
-                // filter item stats
-                if (_aa.indexOf("--filter") !== -1) {
-                    filters = _aa[_aa.indexOf('--filter') + 1].replace(/"+/, "").split(";")
-                    _aa.splice(_aa.indexOf('--filter'), 2)
-                    search = _aa.join(' ')
-                }
-                if (_aa.indexOf("-f") !== -1) {
-                    filters = _aa[_aa.indexOf('-f') + 1].replace(/"/g, "").split(";")
-                    _aa.splice(_aa.indexOf('-f'), 2)
-                    search = _aa.join(' ')
-                }
+        
+        const _aa = search.match(regexAR)
+        for (let _a of _aa) {
+            const _v = _aa[_aa.indexOf(_a) + 1]
+            switch (_a) {
+                case '-p':
+                case '--page':
+                    page = Number(_v)
+                    search = search.replace(_a, '').replace(_v, '').trim()
+                    break
+                case '-t':
+                case '--type':
+                    type = _v.replace(/"/g, '')
+                    search = search.replace(_a, '').replace(_v, '').trim()
+                    break
+                case '-f':
+                case '--filter':
+                    filters = _v.replace(/"/g, '').split(";")
+                    search = search.replace(_a, '').replace(_v, '').trim()
+                    break
+                default:
+                    // empty
             }
+        }
 
         if (regexID.test(search)) {
             let f = false
             let i = list.length
-            while (--i)
+            while (--i >= 0)
                 if (list[i].id.toLowerCase() === search.match(regexID).shift().toLowerCase()) {
                     list = [list[i]]
                     f = true
@@ -63,8 +48,7 @@ module.exports = {
                 }
             if (!f)
                 list = []
-        }
-        else if (search !== '*' && search !== 'all')
+        } else if (search !== '*' && search !== 'all')
             list = await Utils.resolve(require('../Search/Modules/loopSearch').loopSearch(search, list))
         if (type)
             list = await Utils.resolve(require('../Search/Modules/loopType').loopType(type, list))
@@ -98,20 +82,19 @@ module.exports = {
 
             let each = new Map()
             for (let i = page * 20; --i >= (page - 1) * 20;) {
-                const item = list[i]
-                if (!item)
+                const _i = list[i]
+                if (!_i)
                     continue
-                if (!each.get(item.type))
-                    each.set(item.type, [])
-                const array = each.get(item.type)
-                array.push(item)
-                each.set(item.type, array)
+                if (!each.get(_i.type))
+                    each.set(_i.type, [])
+
+                each.set(_i.type, each.get(_i.type).concat(_i))
             }
 
-            for (let type of each.keys()) {
+            for (let t of each.keys()) {
                 res.push(`> ~~                ~~ **${type}** ~~                ~~`)
-                for (let item of each.get(type))
-                    res.push(`> [${item.id}] > **${item.name}**`)
+                for (let i of each.get(t))
+                    res.push(`> [${i.id}] > **${i.name}**`)
             }
 
             return message.channel.send(res.join('\n'))

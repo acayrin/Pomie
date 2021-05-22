@@ -52,11 +52,11 @@ module.exports = {
 for (let e of fs.readdirSync(__dirname + '/Child/Events')) {
     const ev = require(__dirname + '/Child/Events/' + e)
 
-    ev.type === 0 ?
+    if (ev.type === 0)
         client.on(ev.name, () => ev.exec(client))
-    : ev.type === 1 ?
+    else if (ev.type === 1)
         parentPort.on(ev.name, g => ev.exec(client, g))
-    : ev.exec()
+    else ev.exec()
 }
 
 client.login(c.DISCORD_BOT_TOKEN)

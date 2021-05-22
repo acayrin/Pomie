@@ -3,61 +3,49 @@ const Emote = require('../EmoteHandler')
 const {
     exec
 } = require('../Commands/Search')
-const Promise = require('bluebird')
-const Utils   = require('../Utils')
+const Utils = require('../Utils')
 
 module.exports.process = async (item, message, _page) => {
-    const res     = []
+    const res = []
 
-    let base_atk  = undefined
-    let base_def  = undefined
+    let base_atk = undefined
+    let base_def = undefined
     let base_stab = undefined
-    let up_to     = undefined
-    let up_for    = undefined
+    let up_to = undefined
+    let up_for = undefined
 
-    const stats = item.stats
     if (item.stats.length > 0) {
-        for (let i = stats.length; --i >= 0;) {
-            base_stab = stats[i].includes('Base Stability') ? stats[i].match(/\d+/g).shift() : base_stab
-            base_atk  = stats[i].includes('Base ATK')       ? stats[i].match(/\d+/g).shift() : base_atk
-            base_def  = stats[i].includes('Base DEF')       ? stats[i].match(/\d+/g).shift() : base_def
+        res.push(`> ~~                                   ~~`)
+        res.push(`> **Item stats**`)
+        res.push(`>  `)
+        for (let stat of item.stats) {
+            base_stab = stat.includes('Base Stability') ? stat.match(/\d+/g).shift() : base_stab
+            base_atk = stat.includes('Base ATK') ? stat.match(/\d+/g).shift() : base_atk
+            base_def = stat.includes('Base DEF') ? stat.match(/\d+/g).shift() : base_def
 
-            if (stats[i].includes('Base ATK') ||
-                stats[i].includes('Base DEF') ||
-                stats[i].includes('Base Stability'))
-                stats.splice(i, 1)
-        }
-        if (stats.length > 0) {
-            res.push(`> ~~                                   ~~`)
-            res.push(`> **Item stats**`)
-            res.push(`>  `)
-
-            for (let i = stats.length; --i >= 0;) {
-                if (stats[i].includes('Upgrade for')) {
-                    const xtal = Utils.filter(await Utils.resolve(exec(null, `${stats[i].replace('Upgrade for', '').trim()} --type crysta`)), i => i.id !== item.id).shift()
-                    up_for     = `[${xtal.id}] **${xtal.name}** (${xtal.type})`
+            if (!stat.includes('Base ATK') &&
+                !stat.includes('Base DEF') &&
+                !stat.includes('Base Stability'))
+                if (stat.includes('Upgrade for')) {
+                    const xtal = Utils.filter(
+                            await exec(null, `${stat.replace('Upgrade for', '').trim()} --type crysta`),
+                            i => i.id !== item.id)
+                        .shift()
+                    up_for = `[${xtal.id}] **${xtal.name}** (${xtal.type})`
                 } else
-                    res.push(`> + ${stats[i]}`)
-            }
+                    res.push(`> + ${stat}`)
         }
     }
     if (item.uses.length > 0) {
-        const uses = []
-
-        for (let i = item.uses.length; --i >= 0;) {
-            const For = (await Utils.resolve(exec(null, item.uses[i].for))).shift()
-            if (For.type.includes('Crysta'))
-                up_to = `[${For.id}] **${For.name}** (${For.type})`
+        res.push(`> ~~                                   ~~`)
+        res.push(`> **Used for**`)
+        res.push(`>  `)
+        for (let use of item.uses) {
+            const _f = (await exec(null, use.for)).shift()
+            if (_f.type.includes('Crysta'))
+                up_to = `[${_f.id}] **${_f.name}** (${_f.type})`
             else
-                uses.push(`> [${For.id}] **${For.name}** (${For.type}) (need ${item.uses[i].amount})`)
-        }
-
-        if (uses.length !== 0) {
-            res.push(`> ~~                                   ~~`)
-            res.push(`> **Used for**`)
-            res.push(`>  `)
-            for (let u of uses)
-                res.push(u)
+                res.push(`> [${_f.id}] **${_f.name}** (${_f.type}) (need ${use.amount})`)
         }
     }
     if (up_to || up_for) {
@@ -82,17 +70,17 @@ module.exports.process = async (item, message, _page) => {
         res.push(`> Difficulty ${item.recipe.difficulty}`)
         res.push(`> Materials:`)
         res.push(`>  `)
-        for (let i = item.recipe.materials.length; --i >= 0;) {
-            if (item.recipe.materials[i].item.toLowerCase().includes('mana')   ||
-                item.recipe.materials[i].item.toLowerCase().includes('wood')   ||
-                item.recipe.materials[i].item.toLowerCase().includes('cloth')  ||
-                item.recipe.materials[i].item.toLowerCase().includes('metal')  ||
-                item.recipe.materials[i].item.toLowerCase().includes('beast')  ||
-                item.recipe.materials[i].item.toLowerCase().includes('medicine'))
-                res.push(`> + **${item.recipe.materials[i].item}** (need ${item.recipe.materials[i].amount})`)
+        for (let mat of item.recipe.materials) {
+            if (mat.item.toLowerCase().includes('mana') ||
+                mat.item.toLowerCase().includes('wood') ||
+                mat.item.toLowerCase().includes('cloth') ||
+                mat.item.toLowerCase().includes('metal') ||
+                mat.item.toLowerCase().includes('beast') ||
+                mat.item.toLowerCase().includes('medicine'))
+                res.push(`> + **${mat.item}** (need ${mat.amount})`)
             else {
-                const item = (await Utils.resolve(exec(null, item.recipe.materials[i].item), 25)).shift()
-                res.push(`> + [${item.id}] **${item.name}** (${item.type}) (need ${item.recipe.materials[i].amount})`)
+                const mm = (await exec(null, mat.item)).shift()
+                res.push(`> + [${mm.id}] **${mm.name}** (${mm.type}) (need ${mat.amount})`)
             }
         }
     }
@@ -113,34 +101,24 @@ module.exports.process = async (item, message, _page) => {
 
         if (item.drops.length > 10 && item.drops.length - _page * 10 < 0)
             res.push(`> You went a bit too far`)
-        else for (let i = (_page * 10 > item.drops.length ? item.drops.length : _page * 10); --i >= (_page - 1) * 10;) {
-            const from  = (await Utils.resolve(exec(null, item.drops[i].from), 25)).shift()
-            const dyes  = []
-            const codes = []
+        else
+            for (let i = (_page * 10 > item.drops.length ? item.drops.length : _page * 10); --i >= (_page - 1) * 10;) {
+                const from = (await exec(null, item.drops[i].from)).shift()
+                const dyes = []
+                const codes = []
 
-            if (item.drops[i].dyes.length > 0) {
-                // promise map to reduce load
-                await Promise.map(item.drops[i].dyes, async (dye) => {
-                    const code = await Utils.resolve(Color.bestColor(dye), 25)
+                if (item.drops[i].dyes.length > 0)
+                    for (let dye of item.drops[i].dyes) {
+                        const code = Color.bestColor(dye)
+                        dyes.push(Emote.findEmote(`:${code}:`))
+                        codes.push(code.replace(/_/g, ''))
+                    }
 
-                    dyes.push(await Utils.resolve(Emote.findEmote(`:${code}:`), 25))
-                    codes.push(`${`${code}`.replace(/_/g, '')}`)
-                }, { concurrency: 1 })
-            }
-
-            if (res.join('\n').length <= 1900) {
-                if (from)
-                    res.push(`> [${from.id}] **${from.name}** (${from.type}) ${dyes.length > 0 ? `(${dyes.join('')} - ${codes.join(':')})` : ''}`)
+                if (res.join('\n').length <= 1900)
+                    res.push(`> ${from ? `[${from.id}] **${from.name}** (${from.type})` : `[${item.drops[i].from}]`} ${dyes.length > 0 ? `(${dyes.join('')} - ${codes.join(':')})` : ''}`)
                 else
-                    res.push(`> ${item.drops[i].from} ${codes}`)
-            } else {
-                message.channel.send(res.join('\n'))
-                res.length = 0
+                    message.channel.send(res.join('\n'))
             }
-
-            codes.length = 0
-            dyes.length  = 0
-        }
         if (item.drops.length > 10) {
             res.push(`>  `)
             res.push(`> **Note** `)
@@ -149,5 +127,4 @@ module.exports.process = async (item, message, _page) => {
     }
 
     message.channel.send(res.join('\n'))
-    res.length = 0
 }

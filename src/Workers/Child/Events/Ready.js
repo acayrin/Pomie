@@ -2,6 +2,7 @@ const timer = Date.now()
 const fs = require('fs')
 const nf = require('node-fetch')
 const u = require('../../../Modules/Utils')
+const c = require('../../../Config')
 const Discord = require('discord.js-light')
 const {
     parentPort
@@ -24,7 +25,7 @@ module.exports = {
             for (let e of await g[1].emojis.fetch(false))
                 emotes.push(e[1])
         client.database.set('Emojis', emotes)
-        client.database.set('Index', JSON.parse(await (await nf('https://kohri-api.vercel.app/database?search=*')).text()))
+        client.database.set('Index', JSON.parse(await (await nf(c.API_URL + '/database?search=*')).text()))
         client.database.set('lastUsed', Date.now())
         client.database.set('active', true)
 

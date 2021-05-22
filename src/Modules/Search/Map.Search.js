@@ -1,7 +1,6 @@
 const {
     exec
 } = require('../Commands/Search')
-const Utils = require('../Utils')
 
 module.exports.process = async (item, message) => {
     const res = []
@@ -12,12 +11,10 @@ module.exports.process = async (item, message) => {
     res.push(`> ~~                                   ~~`)
     res.push(`> **Monsters** (${item.mobs.length} total)`)
     res.push(`>  `)
-    for (let i = item.mobs.length; --i >= 0;) {
-        const mob = (await Utils.resolve(exec(null, `${item.mobs[i]} -t monster;miniboss;boss`), 25)).shift()
-        if (mob)
-            res.push(`> [${mob.id}] **${mob.name}** (${mob.type})`)
-        else
-            res.push(`> **${item.mobs[i]}**`)
+    for (let mob of item.mobs) {
+        const m = (await exec(null, `${mob} -t monster;miniboss;boss`)).shift()
+
+        res.push(`> ${m ? `[${m.id}] **${m.name}** (${m.type})` : `**${mob}**`}`)
     }
 
     message.channel.send(res.join('\n'))

@@ -3,12 +3,10 @@ const Emote = require('../EmoteHandler')
 const {
     exec
 } = require('../Commands/Search')
-const Promise = require('bluebird')
-const Utils   = require('../Utils')
 
 module.exports.process = async (item, message) => {
     const res = []
-    const map = !item.map.toLowerCase().includes('event') ? (await Utils.resolve(exec(null, item.map), 25)).shift() : undefined
+    const map = !item.map.toLowerCase().includes('event') ? (await exec(null, item.map)).shift() : undefined
 
     res.push(`> **${item.name}**`)
     res.push(`>  `)
@@ -25,28 +23,20 @@ module.exports.process = async (item, message) => {
     res.push(`> ~~                                   ~~`)
     res.push(`> **Item drops** (${item.drops.length} total)`)
     res.push(`>  `)
-    for (let i = item.drops.length; --i >= 0;) {
-        const drop = (await Utils.resolve(exec(null, item.drops[i].id), 25)).shift()
+    for (let drop of item.drops) {
+        const d = (await exec(null, drop.id)).shift()
 
         const dyes = []
-        let codes  = []
-        if (item.drops[i].dyes.length > 0) {
-            // promise map to reduce load
-            await Promise.map(item.drops[i].dyes, async (dye) => {
-                const code = await Utils.resolve(Color.bestColor(dye), 25)
+        const codes = []
 
-                dyes.push(await Utils.resolve(Emote.findEmote(`:${code}:`), 25))
-                codes.push(`${`${code}`.replace(/_/g, '')}`)
-            }, { concurrency: 1 })
-        }
-
-        // print color emojis and codes
-        codes = dyes.length > 0 ? `(${dyes.join('')} - ${codes.join(':')})` : ''
-
-        if (drop)
-            res.push(`> [${drop.id}] **${drop.name}** (${drop.type}) ${codes}`)
-        else
-            res.push(`> **${drop.name}** ${codes}`)
+        if (drop.dyes.length > 0)
+            for (let dye of drop.dyes) {
+                const code = Color.bestColor(dye)
+                dyes.push(Emote.findEmote(`:${code}:`))
+                codes.push(code.replace(/_/g, ''))
+            }
+        
+        res.push(`> ${d ? `[${d.id}] **${d.name}** (${d.type})` : `**${drop.name}**`} ${dyes.length > 0 ? `(${dyes.join('')} - ${codes.join(':')})` : ''}`)
     }
 
     message.channel.send(res.join('\n'))

@@ -51,7 +51,7 @@ module.exports = {
                         if (ch.type !== 'text' || !G.me.hasPermission("MANAGE_WEBHOOKS"))
                             return
 
-                        let hook = (await ch.fetchWebhooks()).find(hook => hook.owner && hook.owner.id === client.user.id)
+                        let hook = (await ch.fetchWebhooks()).find(hk => hk.owner && hk.owner.id === client.user.id)
 
                         if (hook) {
                             let res = []
@@ -59,13 +59,13 @@ module.exports = {
                             res.push(`> **${title}**`)
                             res.push(`>  `)
 
-                            for (let x = 0; x < lines.length; x++)
-                                if (res.join('\n').length + lines[x].length > 1950) {
+                            for (let line of lines)
+                                if (res.join('\n').length + line.length > 1950) {
                                     hook.send(res.join('\n'))
                                     res.length = 0
                                 }
-                            else if (lines[x] !== '')
-                                res.push(`> ${lines[x]}`)
+                            else if (line !== '')
+                                res.push(`> ${line}`)
 
                             res.push(`>  `)
                             res.push(`> *Source: ${url}*\n`)

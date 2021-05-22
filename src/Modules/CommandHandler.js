@@ -11,7 +11,7 @@ module.exports = {
             return message.channel.send('Insufficient permissions')
 
         return c4 ? c4.exec(message, c3)
-                  : c2 ? message.client.commands.get('search').exec(message, c2)
+                  : c2 ? message.client.commands.get('search').exec(message, c1)
                        : message.client.commands.get('help').exec(message, null)
     }
 }
