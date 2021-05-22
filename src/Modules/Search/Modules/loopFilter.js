@@ -8,12 +8,14 @@ module.exports.loopFilter = (filters, list) => {
         const attr    = filter.replace(compare, '').replace(value, '').trim().toLowerCase()
 
         list = Utils.filter(list, item => {
+            let res = false
+
             if (!isNaN(item.sell) && attr.includes('sell')) {
-                return Eval(`module.exports = () => { return ${item.sell} ${compare} ${value} }`)()
+                res = Eval(`module.exports = () => { return ${item.sell} ${compare} ${value} }`)()
 
             } else if (/\d+/.test(item.proc) && attr.includes('proc')) {
                 if (getType(attr) === getType(item.proc.toLowerCase()) || !getType(attr)) {
-                    return Eval(`module.exports = () => { return ${item.proc.match(/\d+/)} ${compare} ${value} }`)()
+                    res = Eval(`module.exports = () => { return ${item.proc.match(/\d+/)} ${compare} ${value} }`)()
                 }
 
             } else if (item.stats && item.stats.length > 0) {
@@ -25,10 +27,12 @@ module.exports.loopFilter = (filters, list) => {
                     const _attr = stat.replace(_val, '').toLowerCase().trim()
 
                     if (_attr === attr) {
-                        return Eval(`module.exports = () => { return ${_val} ${compare} ${value} }`)()
+                        res = Eval(`module.exports = () => { return ${_val} ${compare} ${value} }`)()
                     }
                 }
             }
+
+            return res
         })
     }
 

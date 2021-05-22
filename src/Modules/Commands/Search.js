@@ -66,10 +66,10 @@ module.exports = {
             return list
         }
         if (list.length === 0) {
-            return message.channel.send('Nothing but dust')
+            message.channel.send('Nothing but dust')
+            return false
         }
 
-        const res = []
         if (list.length > 1) {
             list = fsort.inPlaceSort(list).by([{
                 asc: i => i.id.length
@@ -78,9 +78,11 @@ module.exports = {
             }])
 
             if ((page - 1) * 20 > list.length) {
-                return message.channel.send(`Page does not exist`)
+                message.channel.send(`Page does not exist`)
+                return false
             }
 
+            const res = []
             const _curView = page * 20 > list.length ? list.length : page * 20
             const _curPage = (page - 1) * 20 + 1
             const _maxPage = Math.ceil(list.length / 20) === 0 ? 1 : Math.ceil(list.length / 20)
@@ -118,18 +120,20 @@ module.exports = {
                 }
             }
 
-            return message.channel.send(res.join('\n'))
+            message.channel.send(res.join('\n'))
+        } else {
+            const item = list.shift()
+            if (item.id.includes('T')) {
+                require('../Search/Item.Search').process(item, message, page)
+            }
+            if (item.id.includes('E')) {
+                require('../Search/Mob.Search').process(item, message)
+            }
+            if (item.id.includes('M')) {
+                require('../Search/Map.Search').process(item, message)
+            }
         }
 
-        const item = list.shift()
-        if (item.id.includes('T')) {
-            return require('../Search/Item.Search').process(item, message, page)
-        }
-        if (item.id.includes('E')) {
-            return require('../Search/Mob.Search').process(item, message)
-        }
-        if (item.id.includes('M')) {
-            return require('../Search/Map.Search').process(item, message)
-        }
+        return true
     }
 }

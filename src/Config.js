@@ -5,7 +5,7 @@ module.exports = {
     // bot options
     NAME                 : 'Sakagiri',
     COLOR                : '#c91417',
-    MAIN_PREFIX          : '-s',
+    MAIN_PREFIX          : process.env.PREFIX || '-s',
 
     // etc
     API_URL              : process.env.API_URL || 'https://acay-api.vercel.app',
