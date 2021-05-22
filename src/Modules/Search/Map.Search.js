@@ -14,7 +14,10 @@ module.exports.process = async (item, message) => {
     for (let mob of item.mobs) {
         const m = (await exec(null, `${mob} -t monster;miniboss;boss`)).shift()
 
-        res.push(`> ${m ? `[${m.id}] **${m.name}** (${m.type})` : `**${mob}**`}`)
+        if (m)
+            res.push(`[${m.id}] **${m.name}** (${m.type})`)
+        else
+            res.push(`**${mob}**`)
     }
 
     message.channel.send(res.join('\n'))

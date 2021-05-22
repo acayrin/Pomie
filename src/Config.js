@@ -1,17 +1,17 @@
 module.exports = {
+    // credentials
+    DISCORD_BOT_TOKEN    : process.env.DISCORD_BOT_TOKEN,
+        
     // bot options
     NAME                 : require('../package.json').name,
     COLOR                : '#c91417',
     MAIN_PREFIX          : process.env.PREFIX || '-s',
 
-    // credentials
-    DISCORD_BOT_TOKEN    : process.env.DISCORD_BOT_TOKEN,
-
     // etc
-    API_URL              : 'https://acay-api.vercel.app', // process.env.API_URL
+    API_URL              : process.env.API_URL || 'https://acay-api.vercel.app',
+    MAX_THREADS          : process.env.MAX_THREADS || 1,
     VERSION_BOT          : require('../package.json').version,
     VERSION_DB           : require('../package.json').dbversion,
-    MAX_THREADS          : 1, // process.env.MAX_THREADS - amount of workers to spawn on startup
 
     // toram
     LEVEL_CAP            : 230,

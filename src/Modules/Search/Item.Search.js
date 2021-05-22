@@ -14,28 +14,46 @@ module.exports.process = async (item, message, _page) => {
     let up_to = undefined
     let up_for = undefined
 
+    if (item.proc === 'N/A' || item.proc === 'unknown')
+        item.proc = 'Unknown'
+    if (item.sell === '0')
+        item.sell = 'Unknown'
+
+    // item base info
+    res.push(`>  `)
+    res.push(`> Type **${item.type}**  -  Id **${item.id}**`)
+    res.push(`> ~~                                   ~~`)
+    res.push(`> Sell for *${item.sell}*`)
+    res.push(`> Process to *${item.proc}*`)
+
+    // item stats
     if (item.stats.length > 0) {
         res.push(`> ~~                                   ~~`)
         res.push(`> **Item stats**`)
         res.push(`>  `)
         for (let stat of item.stats) {
-            base_stab = stat.includes('Base Stability') ? stat.match(/\d+/g).shift() : base_stab
-            base_atk = stat.includes('Base ATK') ? stat.match(/\d+/g).shift() : base_atk
-            base_def = stat.includes('Base DEF') ? stat.match(/\d+/g).shift() : base_def
+            if (stat.includes('Base Stability'))
+                base_stab = stat.match(/\d+/g).shift()
 
-            if (!stat.includes('Base ATK') &&
-                !stat.includes('Base DEF') &&
-                !stat.includes('Base Stability'))
-                if (stat.includes('Upgrade for')) {
-                    const xtal = Utils.filter(
-                            await exec(null, `${stat.replace('Upgrade for', '').trim()} --type crysta`),
-                            i => i.id !== item.id)
-                        .shift()
-                    up_for = `[${xtal.id}] **${xtal.name}** (${xtal.type})`
-                } else
-                    res.push(`> + ${stat}`)
+            else if (stat.includes('Base ATK'))
+                base_atk = stat.match(/\d+/g).shift()
+
+            else if (stat.includes('Base DEF'))
+                base_def = stat.match(/\d+/g).shift()
+
+            else if (stat.includes('Upgrade for')) {
+                const xtal = Utils.filter(
+                        await exec(null, `${stat.replace('Upgrade for', '').trim()} --type crysta`),
+                        i => i.id !== item.id)
+                    .shift()
+                up_for = `[${xtal.id}] **${xtal.name}** (${xtal.type})`
+
+            } else
+                res.push(`> + ${stat}`)
         }
     }
+
+    // item uses
     if (item.uses.length > 0) {
         for (let use of item.uses) {
             const _f = (await exec(null, use.for)).shift()
@@ -54,6 +72,8 @@ module.exports.process = async (item, message, _page) => {
             }
         }
     }
+
+    // xtal stats
     if (up_to || up_for) {
         res.push(`> ~~                                   ~~`)
         if (up_to) {
@@ -67,9 +87,12 @@ module.exports.process = async (item, message, _page) => {
             res.push(`> + ${up_for}`)
         }
     }
+
+    // item recipe
     if (item.recipe.set > 0 || item.recipe.materials.length > 0) {
         res.push(`> ~~                                   ~~`)
         res.push(`> **Crafting recipe**`)
+        res.push(`>  `)
         res.push(`> Fee ${item.recipe.fee}`)
         res.push(`> Set ${item.recipe.set}`)
         res.push(`> Level ${item.recipe.level}`)
@@ -91,40 +114,57 @@ module.exports.process = async (item, message, _page) => {
         }
     }
 
-    // title
-    res.unshift(`> Process to *${item.proc === 'N/A' || item.proc === 'unknown' ? 'Unknown' : item.proc}*`)
-    res.unshift(`> Sell for *${item.sell === '0' ? 'Unknown' : `${item.sell} Spina`}*`)
-    res.unshift(`> ~~                                   ~~`)
-    res.unshift(`> Type **${item.type}**  -  Id **${item.id}**`)
-    res.unshift(`>  `)
-    res.unshift(`> **${item.name}**${base_atk ? ` (ATK ${base_atk})` : ''}${base_def ? ` (DEF ${base_def})` : ''}${base_stab ? ` (${base_stab}%)` : ''}`)
+    // item name
+    if (base_atk)
+        item.name += ` (ATK ${base_atk})`
+    if (base_def)
+        item.name += ` (DEF ${base_def})`
+    if (base_stab)
+        item.name += ` (${base_stab}%)`
+    res.unshift(`> **${item.name}**`)
 
     // item drops from
     if (item.drops.length > 0) {
+        let view = ''
+        if (item.drops.length > 10)
+            view = `(${item.drops.length} total - page ${_page} of ${Math.floor(item.drops.length / 10)})`
+
         res.push(`> ~~                                   ~~`)
-        res.push(`> **Obtainable from** ${item.drops.length > 10 ? `(${item.drops.length} total - page ${_page} of ${Math.floor(item.drops.length / 10)})` : ''}`)
+        res.push(`> **Obtainable from** ${view}`)
         res.push(`>  `)
 
         if (item.drops.length > 10 && item.drops.length - _page * 10 < 0)
             res.push(`> You went a bit too far`)
+            
         else
             for (let i = (_page * 10 > item.drops.length ? item.drops.length : _page * 10); --i >= (_page - 1) * 10;) {
                 const from = (await exec(null, item.drops[i].from)).shift()
-                const dyes = []
-                const codes = []
+                const l = []
+                const d = []
+                const c = []
 
                 if (item.drops[i].dyes.length > 0)
                     for (let dye of item.drops[i].dyes) {
                         const code = Color.bestColor(dye)
-                        dyes.push(Emote.findEmote(`:${code}:`))
-                        codes.push(code.replace(/_/g, ''))
+                        d.push(Emote.findEmote(`:${code}:`))
+                        c.push(code.replace(/_/g, ''))
                     }
 
-                if (res.join('\n').length <= 1900)
-                    res.push(`> ${from ? `[${from.id}] **${from.name}** (${from.type})` : `[${item.drops[i].from}]`} ${dyes.length > 0 ? `(${dyes.join('')} - ${codes.join(':')})` : ''}`)
-                else
+                if (res.join('\n').length <= 1900) {
+                    if (from)
+                        l.push(`[${from.id}] **${from.name}** (${from.type})`)
+                    else
+                        l.push(`[${item.drops[i].from}]`)
+
+                    if (dyes.length > 0)
+                        l.push(`(${d.join('')} - ${c.join(':')})`)
+                        
+                    res.push(`> ${l.join(' ')}`)
+
+                } else
                     message.channel.send(res.join('\n'))
             }
+
         if (item.drops.length > 10) {
             res.push(`>  `)
             res.push(`> **Note** `)

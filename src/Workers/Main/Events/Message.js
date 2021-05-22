@@ -9,7 +9,9 @@ const limit = new RateLimiter(1, 5000)
 module.exports = {
     name: 'message',
     exec(message) {
-        if (message.author.bot || message.content.split(' ').shift().toLowerCase() !== config.MAIN_PREFIX)
+        if (message.author.bot
+            || (message.content.split(' ').shift() !== `<@!${message.client.user.id}>`
+            &&  message.content.split(' ').shift() !== config.MAIN_PREFIX))
             return
 
         if (limit.take(message.author.id))

@@ -6,37 +6,55 @@ const {
 
 module.exports.process = async (item, message) => {
     const res = []
-    const map = !item.map.toLowerCase().includes('event') ? (await exec(null, item.map)).shift() : undefined
+    let map = item.map
+    let exp = 'Unknown'
+    let hp  = 'Unknown'
+    if (!item.map.toLowerCase().includes('event')) {
+        const get = (await exec(null, item.map)).shift()
+        map = `[${get.id}] **${get.name}**`
+    }
+    if (item.hp && item.hp !== -1)
+        hp = item.hp.toLocaleString()
+    if (item.exp && item.exp !== -1)
+        exp = item.exp.toLocaleString()
 
     res.push(`> **${item.name}**`)
     res.push(`>  `)
     res.push(`> Type **${item.type}**  -  Id **${item.id}**`)
     res.push(`> ~~                                   ~~`)
     res.push(`> Level **${item.level}**`)
-    res.push(`> HP **${item.hp   && item.hp  !== -1 ? item.hp.toLocaleString()  : 'Unknown'}**`)
-    res.push(`> EXP **${item.exp && item.exp !== -1 ? item.exp.toLocaleString() : 'Unknown'}**`)
+    res.push(`> HP **${hp}**`)
+    res.push(`> EXP **${exp}**`)
     res.push(`> Element **${item.ele}**`)
     res.push(`> Tamable **${item.tamable}**`)
     res.push(`> ~~                                   ~~`)
     res.push(`> **Spawn at**`)
-    res.push(`> ${map ? `[${map.id}] **${map.name}**` : `**${item.map}**`}`)
+    res.push(`> ${map}`)
     res.push(`> ~~                                   ~~`)
     res.push(`> **Item drops** (${item.drops.length} total)`)
     res.push(`>  `)
     for (let drop of item.drops) {
         const d = (await exec(null, drop.id)).shift()
-
-        const dyes = []
-        const codes = []
+        const l = []
+        const d = []
+        const c = []
 
         if (drop.dyes.length > 0)
             for (let dye of drop.dyes) {
                 const code = Color.bestColor(dye)
-                dyes.push(Emote.findEmote(`:${code}:`))
-                codes.push(code.replace(/_/g, ''))
+                d.push(Emote.findEmote(`:${code}:`))
+                c.push(code.replace(/_/g, ''))
             }
-        
-        res.push(`> ${d ? `[${d.id}] **${d.name}** (${d.type})` : `**${drop.name}**`} ${dyes.length > 0 ? `(${dyes.join('')} - ${codes.join(':')})` : ''}`)
+
+        if (d)
+            l.push(`[${d.id}] **${d.name}** (${d.type})`)
+        else
+            l.push(`**${drop.name}**`)
+            
+        if (dyes.length > 0)
+            l.push(`(${dyes.join('')} - ${codes.join(':')})`)
+
+        res.push(`> ${l.join(' ')}`)
     }
 
     message.channel.send(res.join('\n'))

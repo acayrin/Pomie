@@ -58,11 +58,11 @@ module.exports = {
             if (Array.isArray(ev.name))
                 for (let n of ev.name)
                     ev.process ? 
-                        process.on(n, () => ev.exec()) :
+                        process.on(n, (e) => ev.exec(e)) :
                         client.on(n, a => ev.exec(a))
             else
                 ev.process ? 
-                    process.on(ev.name, () => ev.exec()):
+                    process.on(ev.name, (e) => ev.exec(e)):
                     client.on(ev.name, a => ev.exec(a))
         }
 

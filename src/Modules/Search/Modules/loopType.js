@@ -1,6 +1,6 @@
 module.exports.loopType = (type, list) => {
     const _list = []
-
+    
     for (let _type of type.split(";")) {
         _type   = _type.trim()
 
@@ -12,7 +12,7 @@ module.exports.loopType = (type, list) => {
                 else if (!_type.startsWith('='))
                     for (let part of list[i].type.split(' '))
                         for (let part2 of _type.split(' '))
-                            if (part.toLowerCase().includes(part2.toLowerCase()))
+                            if (part.match(new RegExp(part2, 'i')))
                                 _list.push(list[i])
     }
 

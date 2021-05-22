@@ -3,8 +3,6 @@ const jq = require('jquery')
 const {
     JSDOM
 } = require('jsdom')
-const utils = require('../Utils')
-let CurrentID = undefined
 
 module.exports = {
     async exec(client) {
@@ -41,13 +39,15 @@ module.exports = {
         content.find('.btn_back').remove()
         content.find('a[href="#top"]').remove()
 
-        if (!CurrentID)
-            CurrentID = id
-        else if (CurrentID !== id)
+        if (!client.database.get('NewsID'))
+            client.database.set('NewsID', id)
+
+        if (client.database.get('NewsID') !== id)
             try {
-                CurrentID = id
+                client.database.set('NewsID', id)
+
                 client.guilds.fetch().then(Gs => Gs.forEach(G =>
-                    G.channels.fetch().then(chs => chs.forEach(cc => cc.children ? cc.children.forEach(async ch => {
+                    G.channels.fetch().then(chs => chs.forEach(cc => cc.children && cc.children.forEach(async ch => {
                         if (ch.type !== 'text' || !G.me.hasPermission("MANAGE_WEBHOOKS"))
                             return
 
@@ -69,12 +69,13 @@ module.exports = {
 
                             res.push(`>  `)
                             res.push(`> *Source: ${url}*\n`)
+
                             hook.send(res)
                         }
-                    }) : null))
+                    })))
                 ))
             } catch (e) {
-                // empty
+                console.log(e)
             }
     }
 }

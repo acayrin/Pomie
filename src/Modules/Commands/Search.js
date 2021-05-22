@@ -92,7 +92,7 @@ module.exports = {
             }
 
             for (let t of each.keys()) {
-                res.push(`> ~~                ~~ **${type}** ~~                ~~`)
+                res.push(`> ~~                ~~ **${t}** ~~                ~~`)
                 for (let i of each.get(t))
                     res.push(`> [${i.id}] > **${i.name}**`)
             }

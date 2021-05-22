@@ -17,7 +17,7 @@ module.exports = {
                 code = color
             }
         }
-        return code
+        return code.toString()
     },
     hexColorDelta(hex1, hex2) {
         const r1 = parseInt(hex1.substring(0, 2), 16)
