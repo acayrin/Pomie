@@ -3,9 +3,9 @@ module.exports = {
     DISCORD_BOT_TOKEN    : process.env.DISCORD_BOT_TOKEN,
 
     // bot options
-    NAME                 : require('../package.json').name,
+    NAME                 : 'Sakagiri',
     COLOR                : '#c91417',
-    MAIN_PREFIX          : process.env.PREFIX || '-s',
+    MAIN_PREFIX          : '-s',
 
     // etc
     API_URL              : process.env.API_URL || 'https://acay-api.vercel.app',

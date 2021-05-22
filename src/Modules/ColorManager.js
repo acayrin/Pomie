@@ -1,11 +1,7 @@
-const Color = new Map()
 const fs = require('lowdb/adapters/FileSync')
 const db = require('lowdb')(new fs('./src/DB.json'))
-const colors = db.get('colors').value()
-
-let i = colors.length
-while (--i >= 0)
-    Color.set(colors[i].code, colors[i].color)
+const list = db.get('colors').value()
+const Color = new Map(list.map(c => [c.code, c.color]))
 
 module.exports = {
     bestColor(hex) {

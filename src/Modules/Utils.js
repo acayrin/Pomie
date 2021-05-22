@@ -20,7 +20,8 @@ module.exports.uniq_fast = a => {
     for (const item of a) {
         if (seen[item] !== 1) {
             seen[item] = 1
-            out[j++] = item
+            out[j] = item
+            j++
         }
     }
 
@@ -42,14 +43,14 @@ module.exports.time_format = time => {
     const hrs = ~~(time / 3600)
     const mins = ~~(time % 3600 / 60)
     const secs = ~~time % 60
-    let ret = ""
+    let ret = ''
 
     if (hrs > 0) {
-        ret += "" + hrs + ":" + (mins < 10 ? "0" : "")
+        ret += `${hrs}:${mins < 10 ? '0' : ''}`
     }
 
-    ret += "" + mins + ":" + (secs < 10 ? "0" : "")
-    ret += "" + secs
+    ret += `${mins}:${secs < 10 ? '0' : ''}`
+    ret += `${secs}`
 
     return ret
 }
@@ -91,41 +92,46 @@ compare 2 json, return true if different, otherwise false
 
 @param {Object} _a 1st json object
 @param {Object} _b 2nd json object
-@return {number|undefined} result code, undefined if both were same
+@return {boolean} result
 */
-module.exports.jsonDiff = (_a, _b) => {
-    // if two json have different keys length
-    if (_a.constructor === Object && _b.constructor === Object && Object.keys(_a).length !== Object.keys(_b).length)
-        return 0
+module.exports.jsonDiff = (x, y) => {
+    // if both are function
+    if (x instanceof Function) {
+        if (y instanceof Function) {
+            return x.toString() === y.toString()
+        }
+        return false
+    }
+    if (x === null || x === undefined || y === null || y === undefined) {
+        return x === y
+    }
+    if (x === y || x.valueOf() === y.valueOf()) {
+        return true
+    }
 
-    // loop
-    for (const _pp of Object.keys(_a))
-        // if target json doesn't have this json key
-        if (_a[_pp] && !_b[_pp] || !_a[_pp] && _b[_pp])
-            return 1
-    // if both keys are Arrays
-    else if (Array.isArray(_a[_pp]) && Array.isArray(_b[_pp]))
-        // Arrays are different in size
-        if (_a[_pp].length !== _b[_pp].length)
-            return 3
-    else
-        // loop
-        for (const _xx of _a[_pp])
-            // if target Array doesn't have one of this Json
-            _b[_pp].map(b => {
-                if (_xx.constructor === Object && b.constructor === Object)
-                    return this.jsonDiff(_xx, b)
-                else if (_xx !== b)
-                    return 4
-            })
-    // if both are json, redo the script
-    else if (_a[_pp].constructor === Object && _b[_pp].constructor === Object)
-        return this.jsonDiff(_a[_pp], _b[_pp])
-    // if target key is different
-    else if (_a[_pp] !== _b[_pp])
-        return 2
+    // if one of them is date, they must had equal valueOf
+    if (x instanceof Date) {
+        return false
+    }
+    if (y instanceof Date) {
+        return false
+    }
 
-    return undefined
+    // if they are not function or strictly equal, they both need to be Objects
+    if (!(x instanceof Object)) {
+        return false
+    }
+    if (!(y instanceof Object)) {
+        return false
+    }
+
+    var p = Object.keys(x)
+    return Object.keys(y).every(function (i) {
+            return p.indexOf(i) !== -1
+        }) ?
+        p.every(function (i) {
+            return this.jsonDiff(x[i], y[i])
+        }) : false
 }
 // ===================================== Json Diff =====================================
 
@@ -145,9 +151,11 @@ a custom high-performance filter
 */
 module.exports.filter = (a, fn) => {
     const f = [] //final
-    for (let b of a)
-        if (fn(b))
+    for (const b of a) {
+        if (fn(b)) {
             f.push(b)
+        }
+    }
     return f
 }
 // ===================================== Fast Filter =====================================

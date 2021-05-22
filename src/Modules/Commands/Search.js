@@ -40,25 +40,34 @@ module.exports = {
         if (regexID.test(search)) {
             let f = false
             let i = list.length
-            while (--i >= 0)
+            while (i > 0) {
+                i--
+
                 if (list[i].id.toLowerCase() === search.match(regexID).shift().toLowerCase()) {
                     list = [list[i]]
                     f = true
                     break
                 }
-            if (!f)
+            }
+            if (!f) {
                 list = []
-        } else if (search !== '*' && search !== 'all')
+            }
+        } else if (search !== '*' && search !== 'all') {
             list = await Utils.resolve(require('../Search/Modules/loopSearch').loopSearch(search, list))
-        if (type)
+        }
+        if (type) {
             list = await Utils.resolve(require('../Search/Modules/loopType').loopType(type, list))
-        if (filters.length > 0)
+        }
+        if (filters.length > 0) {
             list = await Utils.resolve(require('../Search/Modules/loopFilter').loopFilter(filters, list))
+        }
 
-        if (!message)
+        if (!message) {
             return list
-        if (list.length === 0)
+        }
+        if (list.length === 0) {
             return message.channel.send('Nothing but dust')
+        }
 
         const res = []
         if (list.length > 1) {
@@ -68,46 +77,59 @@ module.exports = {
                 desc: e => e.id.match(/\d+/g).shift()
             }])
 
-            if ((page - 1) * 20 > list.length)
+            if ((page - 1) * 20 > list.length) {
                 return message.channel.send(`Page does not exist`)
+            }
 
-            const cur_view = page * 20 > list.length ? list.length : page * 20
-            const cur_page = (page - 1) * 20 + 1
-            const max_page = Math.ceil(list.length / 20) === 0 ? 1 : Math.ceil(list.length / 20)
+            const _curView = page * 20 > list.length ? list.length : page * 20
+            const _curPage = (page - 1) * 20 + 1
+            const _maxPage = Math.ceil(list.length / 20) === 0 ? 1 : Math.ceil(list.length / 20)
 
-            res.push(`> Results **${cur_page}** to **${cur_view}** of **${list.length}** (page **${page}** of **${max_page}**)`)
+            res.push(`> Results **${_curPage}** to **${_curView}** of **${list.length}** (page **${page}** of **${_maxPage}**)`)
             res.push('>  ')
 
-            if (type)
+            if (type) {
                 res.push(`> Filter type **${type}**`)
-            if (filters.length > 0)
+            }
+            if (filters.length > 0) {
                 res.push(`> Filter stat **${filters.join(', ')}**`)
-            if (type || filters.length > 0)
+            }
+            if (type || filters.length > 0) {
                 res.push(`>  `)
+            }
 
             const each = new Map()
-            for (let i = page * 20; --i >= (page - 1) * 20;) {
+            for (let i = (page - 1) * 20; i < page * 20; i++) {
                 const _i = list[i]
-                if (!_i)
+                if (!_i) {
                     continue
-                if (!each.get(_i.type))
+                }
+                if (!each.get(_i.type)) {
                     each.set(_i.type, [])
+                }
 
                 each.set(_i.type, each.get(_i.type).concat(_i))
             }
 
             for (const t of each.keys()) {
                 res.push(`> ~~                ~~ **${t}** ~~                ~~`)
-                for (const i of each.get(t))
+                for (const i of each.get(t)) {
                     res.push(`> [${i.id}] > **${i.name}**`)
+                }
             }
 
             return message.channel.send(res.join('\n'))
         }
 
         const item = list.shift()
-        if (item.id.includes('T')) return require('../Search/Item.Search').process(item, message, page)
-        if (item.id.includes('E')) return require('../Search/Mob.Search').process(item, message)
-        if (item.id.includes('M')) return require('../Search/Map.Search').process(item, message)
+        if (item.id.includes('T')) {
+            return require('../Search/Item.Search').process(item, message, page)
+        }
+        if (item.id.includes('E')) {
+            return require('../Search/Mob.Search').process(item, message)
+        }
+        if (item.id.includes('M')) {
+            return require('../Search/Map.Search').process(item, message)
+        }
     }
 }

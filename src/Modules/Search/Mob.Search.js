@@ -8,15 +8,20 @@ module.exports.process = async (item, message) => {
     const res = []
     let map = item.map
     let exp = 'Unknown'
-    let hp  = 'Unknown'
+    let hp = 'Unknown'
+    // get map
     if (!item.map.toLowerCase().includes('event')) {
         const get = (await exec(null, item.map)).shift()
         map = `[${get.id}] **${get.name}**`
     }
-    if (item.hp && item.hp !== -1)
+    // get localized hp
+    if (item.hp && item.hp !== -1) {
         hp = item.hp.toLocaleString()
-    if (item.exp && item.exp !== -1)
+    }
+    // get localized exp
+    if (item.exp && item.exp !== -1) {
         exp = item.exp.toLocaleString()
+    }
 
     res.push(`> **${item.name}**`)
     res.push(`>  `)
@@ -39,21 +44,19 @@ module.exports.process = async (item, message) => {
         const d = []
         const c = []
 
-        if (drop.dyes.length > 0)
-            for (const dye of drop.dyes) {
-                const code = Color.bestColor(dye)
-                d.push(Emote.findEmote(`:${code}:`))
-                c.push(code.replace(/_/g, ''))
-            }
-
-        if (e)
+        for (const dye of drop.dyes) {
+            const code = Color.bestColor(dye)
+            d.push(Emote.findEmote(`:${code}:`))
+            c.push(code.replace(/_/g, ''))
+        }
+        if (e) {
             l.push(`[${e.id}] **${e.name}** (${e.type})`)
-        else
+        } else {
             l.push(`**${drop.name}**`)
-
-        if (d.length > 0)
+        }
+        if (d.length > 0) {
             l.push(`(${d.join('')} - ${c.join(':')})`)
-
+        }
         res.push(`> ${l.join(' ')}`)
     }
 

@@ -21,9 +21,11 @@ module.exports = {
         }
 
         const emotes = []
-        for (const g of await client.guilds.fetch(false))
-            for (const e of await g[1].emojis.fetch(false))
+        for (const g of await client.guilds.fetch(false)) {
+            for (const e of await g[1].emojis.fetch(false)) {
                 emotes.push(e[1])
+            }
+        }
         client.database.set('Emojis', emotes)
         client.database.set('Index', JSON.parse(await (await nf(c.API_URL + '/database?search=*')).text()))
         client.database.set('lastUsed', Date.now())

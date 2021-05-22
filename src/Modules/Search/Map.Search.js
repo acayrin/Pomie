@@ -14,10 +14,11 @@ module.exports.process = async (item, message) => {
     for (const mob of item.mobs) {
         const m = (await exec(null, `${mob} -t monster;miniboss;boss`)).shift()
 
-        if (m)
+        if (m) {
             res.push(`> [${m.id}] **${m.name}** (${m.type})`)
-        else
+        } else {
             res.push(`> **${mob}**`)
+        }
     }
 
     message.channel.send(res.join('\n'))

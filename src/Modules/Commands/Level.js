@@ -12,8 +12,9 @@ module.exports = {
         const chk = []
 
         res.push(`Exp required for ${fetch.s_lvl} > ${fetch.d_lvl}: ${fetch.t_exp}`)
-        if (fetch.b_exp)
+        if (fetch.b_exp) {
             res.push(`Exp bonus +${fetch.b_exp}%`)
+        }
 
         switch (fetch.type) {
             case 1: {
@@ -57,10 +58,11 @@ module.exports = {
                         res.length = 0
                     }
                 }
-                for (const c of chk)
+                for (const c of chk) {
                     fetch.pm ?
                         message.author.send(`\`\`\`JSON\n${c}\`\`\``) :
                         message.channel.send(`${_user}\`\`\`JSON\n${c}\`\`\``)
+                }
                 break
             }
             default:

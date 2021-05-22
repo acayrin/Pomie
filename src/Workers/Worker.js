@@ -7,8 +7,9 @@ const {
 
 module.exports = {
     spawn() {
-        if (DB.get('Workers').length > 5)
+        if (DB.get('Workers').length > 5) {
             return null
+        }
 
         const child = new Worker(`${__dirname}/Child.js`, {
             workerData: {
@@ -28,8 +29,9 @@ module.exports = {
         })
 
         child.on('message', (e) => {
-            if (DB.get('Workers').indexOf(child) === -1 && e.active)
+            if (DB.get('Workers').indexOf(child) === -1 && e.active) {
                 DB.set('Workers', DB.get('Workers').concat(child))
+            }
 
             if (e.hitWarning) {
                 Utils.log(chalk.yellow(`Mini #${child.threadId} reached 80% heap, spawning new one`))
@@ -37,8 +39,9 @@ module.exports = {
             }
 
             if (e.lastUsed) {
-                if (DB.get('Workers').length === 1)
+                if (DB.get('Workers').length === 1) {
                     return
+                }
 
                 const ID = child.threadId
                 Utils.log(chalk.yellow(`Mini #${child.threadId} hasn't been used in ${e.timeout} seconds, terminating it`))

@@ -7,7 +7,8 @@ module.exports = {
     exec() {
         utils.log(chalk.red(`${config.NAME} (A:${config.VERSION_BOT} - DB:${config.VERSION_DB})`))
 
-        for (let i = config.MAX_THREADS; --i >= 0;)
+        for (let i = 0; i < config.MAX_THREADS; i++) {
             require('../../Worker').spawn()
+        }
     }
 }

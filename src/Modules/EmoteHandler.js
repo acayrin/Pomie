@@ -8,9 +8,10 @@ module.exports = {
         const cache = fs.inPlaceSort(cl.database.get('Emojis')).asc(e => e.name)
         const emoji = emote ? cache.find(e => e.name === emote.replace(/:/g, "")) : undefined
 
-        if (emoji)
+        if (emoji) {
             return _url ? emoji.url : `<:${emoji.identifier}>`
-        else
+        } else {
             return undefined
+        }
     }
 }

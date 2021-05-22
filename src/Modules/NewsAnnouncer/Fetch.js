@@ -39,17 +39,19 @@ module.exports = {
         content.find('.btn_back').remove()
         content.find('a[href="#top"]').remove()
 
-        if (!client.database.get('NewsID'))
+        if (!client.database.get('NewsID')) {
             client.database.set('NewsID', id)
+        }
 
-        if (client.database.get('NewsID') !== id)
+        if (client.database.get('NewsID') !== id) {
             try {
                 client.database.set('NewsID', id)
 
                 client.guilds.fetch().then(Gs => Gs.forEach(G =>
                     G.channels.fetch().then(chs => chs.forEach(cc => cc.children && cc.children.forEach(async ch => {
-                        if (ch.type !== 'text' || !G.me.hasPermission("MANAGE_WEBHOOKS"))
+                        if (ch.type !== 'text' || !G.me.hasPermission("MANAGE_WEBHOOKS")) {
                             return
+                        }
 
                         const hook = (await ch.fetchWebhooks()).find(hk => hk.owner && hk.owner.id === client.user.id)
 
@@ -59,13 +61,14 @@ module.exports = {
                             res.push(`> **${title}**`)
                             res.push(`>  `)
 
-                            for (const line of lines)
+                            for (const line of lines) {
                                 if (res.join('\n').length + line.length > 1950) {
                                     hook.send(res.join('\n'))
                                     res.length = 0
+                                } else if (line !== '') {
+                                    res.push(`> ${line}`)
                                 }
-                            else if (line !== '')
-                                res.push(`> ${line}`)
+                            }
 
                             res.push(`>  `)
                             res.push(`> *Source: ${url}*\n`)
@@ -77,5 +80,6 @@ module.exports = {
             } catch (e) {
                 console.log(e)
             }
+        }
     }
 }

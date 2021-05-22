@@ -11,12 +11,12 @@ module.exports = {
     exec(message) {
         if (message.author.bot
             || (message.content.split(' ').shift() !== `<@!${message.client.user.id}>`
-            &&  message.content.split(' ').shift() !== config.MAIN_PREFIX))
+            &&  message.content.split(' ').shift() !== config.MAIN_PREFIX)) {
             return
-
-        if (limit.take(message.author.id))
-            return message.channel.send('Help only available once every 5 seconds')
-
-        db.set('Queue', db.get('Queue').concat(utils.zip(JSON.stringify(message))))
+        } else if (limit.take(message.author.id)) {
+            message.channel.send('Help only available once every 5 seconds')
+        } else {
+            db.set('Queue', db.get('Queue').concat(utils.zip(JSON.stringify(message))))
+        }
     }
 }

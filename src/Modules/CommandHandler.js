@@ -10,14 +10,16 @@ module.exports = {
         const c3 = c1.slice(c2.length).trim()
         const c4 = message.client.commands.get(c2) || message.client.commands.find(_c => c2 && _c.short && _c.short.includes(c2))
 
-        if (c4)
-            if (c4.role && !message.member.hasPermission(c4.role))
+        if (c4) {
+            if (c4.role && !message.member.hasPermission(c4.role)) {
                 message.channel.send('Insufficient permissions')
-            else
+            } else {
                 c4.exec(message, c3)
-        else if (c2)
+            }
+        } else if (c2) {
             message.client.commands.get('search').exec(message, c1)
-        else
+        } else {
             message.client.commands.get('help').exec(message, null)
+        }
     }
 }
