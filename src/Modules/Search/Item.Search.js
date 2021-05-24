@@ -1,17 +1,15 @@
+const Utils = require('../Utils')
 const Color = require('../ColorManager')
 const Emote = require('../EmoteHandler')
-const {
-    exec
-} = require('../Commands/Search')
-const Utils = require('../Utils')
+const Search = require('../Commands/Search')
 
 module.exports.process = async (item, message, _page) => {
     const res = []
+    let _upTo = undefined
+    let _upFor = undefined
     let _baseAtk = undefined
     let _baseDef = undefined
     let _baseStab = undefined
-    let _upTo = undefined
-    let _upFor = undefined
 
     if (item.proc === 'N/A' || item.proc === 'unknown') {
         item.proc = 'Unknown'
@@ -41,7 +39,7 @@ module.exports.process = async (item, message, _page) => {
                 _baseDef = stat.match(/\d+/g).shift()
             } else if (stat.includes('Upgrade for')) {
                 _upFor = Utils.filter(
-                        await exec(null, `${stat.replace('Upgrade for', '').trim()} --type crysta`),
+                        await Search.exec(null, `${stat.replace('Upgrade for', '').trim()} --type crysta`),
                         i => i.id !== item.id)
                     .shift()
             } else {
@@ -53,7 +51,7 @@ module.exports.process = async (item, message, _page) => {
     // item uses
     if (item.uses.length > 0) {
         for (const use of item.uses) {
-            const _f = (await exec(null, use.for)).shift()
+            const _f = (await Search.exec(null, use.for)).shift()
             if (_f.type.includes('Crysta')) {
                 _upTo = _f
                 item.uses.splice(item.uses.indexOf(use), 1)
@@ -64,7 +62,7 @@ module.exports.process = async (item, message, _page) => {
             res.push(`> **Used for**`)
             res.push(`>  `)
             for (const use of item.uses) {
-                const _f = (await exec(null, use.for)).shift()
+                const _f = (await Search.exec(null, use.for)).shift()
                 res.push(`> [${_f.id}] **${_f.name}** (${_f.type}) (x ${use.amount})`)
             }
         }
@@ -106,7 +104,7 @@ module.exports.process = async (item, message, _page) => {
                 mat.item.toLowerCase().includes('medicine')) {
                 res.push(`> + **${mat.item}** (x ${mat.amount})`)
             } else {
-                const mm = (await exec(null, mat.item)).shift()
+                const mm = (await Search.exec(null, mat.item)).shift()
                 res.push(`> + [${mm.id}] **${mm.name}** (${mm.type}) (x ${mat.amount})`)
             }
         }
@@ -129,7 +127,7 @@ module.exports.process = async (item, message, _page) => {
             const _c1 = _page * 10 > item.drops.length ? item.drops.length : _page * 10
             const _c2 = (_page - 1) * 10
             for (let i = _c2; i < _c1; i++) {
-                const from = (await exec(null, item.drops[i].from)).shift()
+                const from = (await Search.exec(null, item.drops[i].from)).shift()
                 const l = []
                 const d = []
                 const c = []

@@ -1,6 +1,4 @@
-const {
-    exec
-} = require('../Commands/Search')
+const Search = require('../Commands/Search')
 
 module.exports.process = async (item, message) => {
     const res = []
@@ -12,7 +10,7 @@ module.exports.process = async (item, message) => {
     res.push(`> **Monsters** (${item.mobs.length} total)`)
     res.push(`>  `)
     for (const mob of item.mobs) {
-        const m = (await exec(null, `${mob} -t monster;miniboss;boss`)).shift()
+        const m = (await Search.exec(null, `${mob} -t monster;miniboss;boss`)).shift()
 
         if (m) {
             res.push(`> [${m.id}] **${m.name}** (${m.type})`)

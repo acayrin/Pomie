@@ -65,7 +65,7 @@ module.exports.jsDiff = (_a, _b) => {
         }
         return true
     } else if (!_a || !_b) {
-        return _a !== _b
+        return _a === _b
     } else if (_a === _b || _a.valueOf() === _b.valueOf()) {
         return false
     } else if (Array.isArray(_a)) {
@@ -168,6 +168,15 @@ String.prototype.fillWith = function (replace, amount, _backward) {
  * @param {String} _tag additional tag
  */
 module.exports.log = (msg, _level, _tag) => {
+    let c = undefined
+    try {
+        c = require('chalk')
+    } catch (e) {
+        // chalk not found
+    }
+    if (msg instanceof Error) {
+        return console.log(c ? c.red(msg) : msg)
+    }
     const options = {
         timeZone: 'Asia/Bangkok',
         hour: 'numeric',
@@ -180,13 +189,6 @@ module.exports.log = (msg, _level, _tag) => {
     const t = require('worker_threads')
     const w = t.isMainThread ? 'Main' : `Worker #${t.threadId}`
     const l = _level || 1
-
-    let c = undefined
-    try {
-        c = require('chalk')
-    } catch (e) {
-        // chalk not found
-    }
 
     _tag && (msg = `${_tag} ${msg}`)
     switch (l) {

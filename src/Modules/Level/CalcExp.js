@@ -1,11 +1,3 @@
-// ===================================== Get exp for level(s) =====================================
-/**
- * Get the amount of exp for levels
- *
- * @param {Number} _level base level
- * @param {Number} _bonus destination level
- * @return {Number} amount of exp
- */
 module.exports.getExp = (_level, _dlevel) => {
     const O = {
         a   : Number(_level),
@@ -18,4 +10,3 @@ module.exports.getExp = (_level, _dlevel) => {
         : 0.025 * O.a ** 4 + 2 * O.a
     return Math.floor(O.x)
 }
-// ===================================== Get exp for level(s) =====================================

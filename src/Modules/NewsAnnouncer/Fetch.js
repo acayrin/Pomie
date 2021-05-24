@@ -1,8 +1,6 @@
-const nf = require('node-fetch')
 const jq = require('jquery')
-const {
-    JSDOM
-} = require('jsdom')
+const nf = require('node-fetch')
+const { JSDOM } = require('jsdom')
 
 module.exports = {
     async exec(client) {

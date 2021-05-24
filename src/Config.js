@@ -1,3 +1,4 @@
+const pk = require('../package.json')
 const db = JSON.parse(require('fs').readFileSync(`${__dirname}/Sakagiri.json`, 'utf-8'))
 
 module.exports = {
@@ -16,7 +17,8 @@ module.exports = {
     IGNORE_LEVELING_MAP  : db.toram.ignore_leveling_map,
 
     // etc
-    MAX_THREADS          : process.env.MAX_THREADS || 1,
-    VERSION_BOT          : require('../package.json').version,
+    HEROKU               : true,
+    MAX_THREADS          : process.env.MAX_THREADS || 2,
+    VERSION_BOT          : pk.version,
     VERSION_DB           : db.version
 }

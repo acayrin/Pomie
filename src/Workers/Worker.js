@@ -1,56 +1,30 @@
-const DB = require('./Main').client.database
-const Utils = require('../Modules/Utils')
-const chalk = require('chalk')
-const {
-    Worker
-} = require('worker_threads')
+const cf = require('../Config')
+const db = require('./Main').client.database
+const ut = require('../Modules/Utils')
+const { Worker } = require('worker_threads')
 
 module.exports = {
     spawn() {
-        if (DB.get('Workers').length > 5) {
+        if (db.get('Workers').length > cf.MAX_THREADS) {
             return null
         }
 
         const child = new Worker(`${__dirname}/Child.js`, {
-            workerData: {
-                timeout: 900
-            },
-            maxOldGenerationSizeMb: 200
+            maxOldGenerationSizeMb: cf.HEROKU ? 1024 / cf.MAX_THREADS : 512
         })
-        Utils.log(chalk.green(`+ Spawned Mini #${child.threadId}`))
+
+        ut.log(`+ Spawned Mini #${child.threadId}`)
 
         child.on('error', err => {
-            Utils.log(chalk.red(`- Mini #${child.threadId} died (Error: ${err.message})`))
-            console.log(err)
-
-            DB.set('Workers', Utils.filter(DB.get('Workers'), wkr => wkr !== child))
-
+            ut.log(`- Worker #${child.threadId} died (Error: ${err.message})`, 3)
+            ut.log(err, 3)
+            db.set('Workers', ut.filter(db.get('Workers'), wkr => wkr !== child))
             this.spawn()
         })
 
         child.on('message', (e) => {
-            if (DB.get('Workers').indexOf(child) === -1 && e.active) {
-                DB.set('Workers', DB.get('Workers').concat(child))
-            }
-
-            if (e.hitWarning) {
-                Utils.log(chalk.yellow(`Mini #${child.threadId} reached 80% heap, spawning new one`))
-                this.spawn()
-            }
-
-            if (e.lastUsed) {
-                if (DB.get('Workers').length === 1) {
-                    return
-                }
-
-                const ID = child.threadId
-                Utils.log(chalk.yellow(`Mini #${child.threadId} hasn't been used in ${e.timeout} seconds, terminating it`))
-
-                DB.set('Workers', Utils.filter(DB.get('Workers'), wkr => wkr !== child))
-
-                child.terminate().then(() => {
-                    Utils.log(chalk.red(`- Mini #${ID} has been terminated`))
-                })
+            if (db.get('Workers').indexOf(child) === -1 && e.active) {
+                db.set('Workers', db.get('Workers').concat(child))
             }
         })
 

@@ -1,9 +1,7 @@
-const db = require('../../Main').client.database
 const config = require('../../../Config')
+const db = require('../../Main').client.database
 const utils = require('../../../Modules/Utils')
-const {
-    RateLimiter
-} = require('discord.js-rate-limiter')
+const { RateLimiter } = require('discord.js-rate-limiter')
 const limit = new RateLimiter(1, 5000)
 
 module.exports = {

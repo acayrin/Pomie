@@ -1,5 +1,5 @@
-const config = require('../Config')
 const fs = require('fs')
+const config = require('../Config')
 const Discord = require('discord.js-light')
 const client = new Discord.Client({
     messageCacheMaxSize: 300,

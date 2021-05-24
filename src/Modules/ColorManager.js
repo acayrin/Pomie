@@ -1,7 +1,7 @@
-const fs = require('lowdb/adapters/FileSync')
-const db = require('lowdb')(new fs('./src/Sakagiri.json'))
-const list = db.get('colors').value()
-const Color = new Map(list.map(c => [c.code, c.color]))
+const fs = require('fs')
+const pt = require('path')
+const db = fs.readFileSync(pt.resolve('./src/Sakagiri.json'), 'utf-8')
+const Color = new Map(JSON.parse(db).colors.map(c => [c.code, c.color]))
 
 module.exports = {
     bestColor(hex) {

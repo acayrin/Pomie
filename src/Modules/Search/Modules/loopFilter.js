@@ -1,10 +1,10 @@
-const Utils = require('../../Utils')
 const Eval  = require('eval')
+const Utils = require('../../Utils')
 
 module.exports.loopFilter = (filters, list) => {
     for (const filter of filters) {
-        const compare = filter.match(/((<|>)=)|<|>|=/g).shift()
         const value   = filter.match(/\d+/g).pop()
+        const compare = filter.match(/((<|>)=)|<|>|=/g).shift()
         const attr    = filter.replace(compare, '').replace(value, '').trim().toLowerCase()
 
         list = Utils.filter(list, item => {

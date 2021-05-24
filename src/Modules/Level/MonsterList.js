@@ -1,25 +1,13 @@
 const Utils = require('../Utils')
 const config = require('../../Config')
-const {
-    exec
-} = require('../../Modules/Commands/Search')
-const {
-    inPlaceSort
-} = require('fast-sort')
+const { inPlaceSort } = require('fast-sort')
+const Search = require('../../Modules/Commands/Search')
 
-// ===================================== Get list of level with bonus =====================================
-/**
- * Get a list of bosses for current level
- *
- * @param {Number} level the level to get mob list
- * @param {Number} _bonus bonus exp percentage
- * @return {Array} a list of mobs
- */
 module.exports.getMobList = async (_level, _bonus) => {
     // variables
-    const level = Number(_level)
     const _map = new Map()
-    const get = await exec(null, '* -t boss;mini;monster')
+    const level = Number(_level)
+    const get = await Search.exec(null, '* -t boss;mini;monster')
 
     // loop
     main:

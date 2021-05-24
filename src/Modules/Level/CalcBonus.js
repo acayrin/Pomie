@@ -1,10 +1,3 @@
-// ===================================== Get bonus off level =====================================
-/**
- * Get exp bonus for current level
- *
- * @param {Number} _level base level
- * @return {Number} exp bonus percentage
- */
 module.exports.getExpBonus = (_level) => {
     let _lvl = Number(_level)
 
@@ -29,4 +22,3 @@ module.exports.getExpBonus = (_level) => {
 
     return _ss
 }
-// ===================================== Get bonus off level =====================================

@@ -1,7 +1,7 @@
+const os = require('node-os-utils')
 const Discord = require('discord.js')
 const config = require('../../Config')
 const utils = require('../../Modules/Utils')
-const pidusage = require('pidusage')
 
 module.exports = {
     name: 'status',
@@ -22,7 +22,7 @@ module.exports = {
             .addField(`Uptime`, utils.time_format(message.client.uptime / 1000), true)
             .addField(`Servers`, message.client.guilds.cache.size, true)
 
-            .addField(`CPU`, ((await pidusage(process.pid)).cpu / 2).toFixed(2) + ' %', true)
+            .addField(`CPU`, await os.cpu.usage() + ' %', true)
             .addField(`Memory`, (process.memoryUsage().rss / 1024 / 1024).toFixed(2) + ' mb', true)
             .addField(`\u200B`, `\u200B`, true)
 

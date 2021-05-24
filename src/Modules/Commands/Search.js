@@ -1,8 +1,8 @@
-const client = require('../../Workers/Child')._bot()
-const fsort = require('fast-sort')
 const Utils = require('../Utils')
-const regexID = /^(?:[a-z][0-9]+)[a-z0-9]*$/ig
+const fsort = require('fast-sort')
 const regexAR = /(?:[^\s"]+|"[^"]*")/g
+const regexID = /^(?:[a-z][0-9]+)[a-z0-9]*$/ig
+const client = require('../../Workers/Child')._bot()
 
 module.exports = {
     name: 'search',

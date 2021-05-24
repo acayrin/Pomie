@@ -1,28 +1,16 @@
-const {
-    getMobList
-} = require('./MonsterList'),
-{
-    getExpBonus
-} = require('./CalcBonus'),
-{
-    getExp
-} = require('./CalcExp'),
-{
-    inPlaceSort
-} = require('fast-sort'),
-Utils   = require('../Utils')
+const Utils = require('../Utils')
+const { getExp } = require('./CalcExp')
+const { inPlaceSort } = require('fast-sort')
+const { getExpBonus } = require('./CalcBonus')
+const { getMobList } = require('./MonsterList')
 
-// ===================================== Get detailed list of bosses =====================================
-/**
-send a detailed leveling guide
-*/
 module.exports.getLevelGuide = async (args) => {
     // variables
-    const _timer = Date.now()
     const res    = {}
-    let   _bb    = args
     let   _bonus = 50
+    let   _bb    = args
     let   _filt  = null
+    const _timer = Date.now()
 
     // prevent negative values
     let level   = Math.abs(Number(_bb.split(' ')[0]))
@@ -87,7 +75,7 @@ module.exports.getLevelGuide = async (args) => {
     }
 
     // get data
-    const total = await getMobList(level, _bonus === 'auto' ? getExpBonus(level) : _bonus)
+    const total = await getMobList(level, _bonus.includes('auto') ? getExpBonus(level) : _bonus)
 
     // if no result
     if (total.length === 0) {
@@ -134,7 +122,7 @@ module.exports.getLevelGuide = async (args) => {
         for (let _lvl = Number(level); _lvl < _alevel; _lvl++) {
             // variables
             const _fcount      = (_lvl - _clevel) + 1
-            const _ebonus      = _bonus === 'auto' ? getExpBonus(_lvl + 1) : _bonus
+            const _ebonus      = _bonus.includes('auto') ? getExpBonus(_lvl + 1) : _bonus
 
             const _mlist       = await getMobList(_lvl,     _cbonus)
             const _mlist_2     = await getMobList(_lvl + 1, _cbonus)
@@ -227,7 +215,7 @@ module.exports.getLevelGuide = async (args) => {
 
                 json.s_lvl = _clevel
                 json.d_lvl = _lvl
-                json.b_exp = _bonus === 'auto' ? _cbonus : undefined
+                json.b_exp = _bonus.includes('auto') ? _cbonus : undefined
 
                 // if boss exist
                 if (_boss) {
@@ -324,4 +312,3 @@ module.exports.getLevelGuide = async (args) => {
     res.timer = Utils.time_format((Date.now() - _timer) / 1000)
     return res
 }
-// ===================================== Get detailed list of bosses =====================================
