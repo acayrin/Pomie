@@ -1,5 +1,5 @@
 const fs = require('lowdb/adapters/FileSync')
-const db = require('lowdb')(new fs('./src/DB.json'))
+const db = require('lowdb')(new fs('./src/Sakagiri.json'))
 const list = db.get('colors').value()
 const Color = new Map(list.map(c => [c.code, c.color]))
 
