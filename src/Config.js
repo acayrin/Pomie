@@ -1,3 +1,5 @@
+const db = JSON.parse(require('fs').readFileSync(`${__dirname}/Sakagiri.json`, 'utf-8'))
+
 module.exports = {
     // credentials
     DISCORD_BOT_TOKEN    : process.env.DISCORD_BOT_TOKEN,
@@ -8,14 +10,13 @@ module.exports = {
     MAIN_PREFIX          : process.env.PREFIX || '-s',
 
     // etc
-    API_URL              : process.env.API_URL || 'https://acay-api.vercel.app',
     MAX_THREADS          : process.env.MAX_THREADS || 1,
     VERSION_BOT          : require('../package.json').version,
-    VERSION_DB           : require('../package.json').dbversion,
+    VERSION_DB           : db.version,
 
     // toram
-    LEVEL_CAP            : 230,
-    IGNORE_LEVELING_NAME : ['slayer cherrimoth', 'radibat', 'goldoon', 'chocolate ooze', 'candela', 'adaro', 'megiston', 'noeliel', 'yashiro', 'pom', 'potum', 'narumi', 'felicitoad', 'cookie', 'alfenix', 'usakichi', 'usami', 'baphomela', 'black shadow', 'yule cat'],
-    IGNORE_LEVELING_ID   : ['e1296'],
-    IGNORE_LEVELING_MAP  : ['m368', 'm320', 'm321', 'm322', 'm323', 'm324', 'm325', 'm326', 'm327', 'm328', 'm329', 'm330', 'm331', 'm332']
+    LEVEL_CAP            : db.toram.level_cap,
+    IGNORE_LEVELING_ID   : db.toram.ignore_leveling_id,
+    IGNORE_LEVELING_NAME : db.toram.ignore_leveling_name,
+    IGNORE_LEVELING_MAP  : db.toram.ignore_leveling_map
 }

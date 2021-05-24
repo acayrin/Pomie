@@ -1,17 +1,10 @@
-const chalk = require('chalk')
-const {
-    isMainThread,
-    threadId
-} = require('worker_threads')
-
 // ===================================== Clean up duplicates in an Array =====================================
 /**
-@func uniq_fast
-remove duplicates in an Array
-
-@param {Array} a the array to unique
-@return {Array} the unique'd array
-*/
+ * Unique an Array
+ * 
+ * @param {Array} a input array
+ * @returns unique'd array
+ */
 module.exports.uniq_fast = a => {
     const seen = {}
     const out = []
@@ -32,18 +25,17 @@ module.exports.uniq_fast = a => {
 
 // ===================================== Format seconds to HH:mm:ss =====================================
 /**
-@func time_format
-format seconds to HH:mm:ss format
-
-@param {Number} time seconds to convert
-@return {String} formatted time
-*/
+ * Format seconds to HH:mm:ss format
+ *
+ * @param {Number} time seconds to convert
+ * @return {String} formatted time
+ */
 module.exports.time_format = time => {
     time = Math.floor(time)
     const hrs = ~~(time / 3600)
     const mins = ~~(time % 3600 / 60)
     const secs = ~~time % 60
-    let ret = ''
+    let ret = ""
 
     if (hrs > 0) {
         ret += `${hrs}:${mins < 10 ? '0' : ''}`
@@ -57,102 +49,68 @@ module.exports.time_format = time => {
 // ===================================== Format seconds to HH:mm:ss =====================================
 
 
-// ===================================== Logger =====================================
-/**
-@func log
-pretty log to console
-
-@param {String} string string to log
-@param {boolean} _isConsole show as CONSOLE instead of DISCORD
-*/
-module.exports.log = (string, _isConsole) => {
-    const options = {
-            timeZone: 'Asia/Bangkok',
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric'
-        },
-        formatter = new Intl.DateTimeFormat([], options)
-
-    const x = _isConsole ? 'Console' : 'Discord'
-    const t = formatter.format(new Date())
-    const e = isMainThread ? 'Main' : `Mini #${threadId}`
-
-    const a = chalk.magentaBright(`[${x} - ${t}]`)
-    const b = chalk.yellowBright(`[${e}]`)
-    console.log(`${a} ${b} ${string}`)
-}
-// ===================================== Logger =====================================
-
 
 // ===================================== Json Diff =====================================
 /**
-@func jsonDiff
-compare 2 json, return true if different, otherwise false
-
-@param {Object} _a 1st json object
-@param {Object} _b 2nd json object
-@return {boolean} result
-*/
-module.exports.jsonDiff = (x, y) => {
-    // if both are function
-    if (x instanceof Function) {
-        if (y instanceof Function) {
-            return x.toString() === y.toString()
+ * Compare 2 json, return true if different, otherwise false
+ *
+ * @param {Object} _a 1st json object
+ * @param {Object} _b 2nd json object
+ * @return {boolean} result
+ */
+module.exports.jsDiff = (_a, _b) => {
+    if (_a instanceof Function) {
+        if (_b instanceof Function) {
+            return _a.toString() === _b.toString()
         }
-        return false
-    }
-    if (x === null || x === undefined || y === null || y === undefined) {
-        return x === y
-    }
-    if (x === y || x.valueOf() === y.valueOf()) {
         return true
-    }
-
-    // if one of them is date, they must had equal valueOf
-    if (x instanceof Date) {
+    } else if (!_a || !_b) {
+        return _a !== _b
+    } else if (_a === _b || _a.valueOf() === _b.valueOf()) {
         return false
+    } else if (Array.isArray(_a)) {
+        if (Array.isArray(_b)) {
+            if (_a.sort().length !== _b.sort().length) {
+                return true
+            }
+            for (const _aa of _a) {
+                if (_b.indexOf(_aa) === -1) {
+                    const test = this.jsDiff(_b[_a.indexOf(_aa)], _aa)
+                    if (test) {
+                        return true
+                    }
+                }
+            }
+            return false
+        }
+        return true
+    } else if (Object.keys(_a).length !== Object.keys(_b).length) {
+        return true
+    } else {
+        for (const _k in _a) {
+            const test = this.jsDiff(_a[_k], _b[_k])
+            if (test) {
+                return true
+            }
+        }
     }
-    if (y instanceof Date) {
-        return false
-    }
-
-    // if they are not function or strictly equal, they both need to be Objects
-    if (!(x instanceof Object)) {
-        return false
-    }
-    if (!(y instanceof Object)) {
-        return false
-    }
-
-    var p = Object.keys(x)
-    return Object.keys(y).every(function (i) {
-            return p.indexOf(i) !== -1
-        }) ?
-        p.every(function (i) {
-            return this.jsonDiff(x[i], y[i])
-        }) : false
+    return false
 }
 // ===================================== Json Diff =====================================
 
 
 // ===================================== Fast Filter =====================================
 /**
-@func filter
-a custom high-performance filter
-
-@perf
-60% faster than the built-in JavaScript filter func
-
-@typedef {(e: *) => boolean} filterFnAny
-@param {*[]} a
-@param {filterFnAny} fn
-@return {*[]}
-*/
-module.exports.filter = (a, fn) => {
-    const f = [] //final
+ * Fast filter array
+ * 
+ * @param {Array} a input array
+ * @param {() => void} cb callback function
+ * @returns filtered array
+ */
+module.exports.filter = (a, cb) => {
+    const f = []
     for (const b of a) {
-        if (fn(b)) {
+        if (cb(b)) {
             f.push(b)
         }
     }
@@ -162,9 +120,115 @@ module.exports.filter = (a, fn) => {
 
 
 
+// ===================================== JSON Compress =====================================
+/**
+ * Compress object into lzw string
+ * 
+ * @param {Object|Array} json input json
+ * @returns {String} output string
+ */
+module.exports.zip = obj => require('lz-string').compress(require('jsonpack').pack(obj))
+/**
+ * Decompress lzw string into object
+ * 
+ * @param {String} lzw input string
+ * @returns {Object} output object
+ */
+module.exports.unzip = lzw => require('jsonpack').unpack(require('lz-string').decompress(lzw))
+// ===================================== JSON Compress =====================================
+
+
+
+// ===================================== fillWith =====================================
+/**
+ * Fill a string with replacement
+ * 
+ * @param {String} replace replacement string
+ * @param {Number} amount amount to fill up
+ * @param {Boolean} _backward fill backwards instead
+ * @returns filled string
+ */
+String.prototype.fillWith = function (replace, amount, _backward) {
+    let _s = ''
+    for (let s = Math.abs(amount - this.valueOf().length); --s >= 0;) {
+        _s += replace
+    }
+    return (_backward ? _s + this.valueOf() : this.valueOf() + _s)
+}
+// ===================================== fillWith =====================================
+
+
+
+// ===================================== Logger =====================================
+/**
+ * Log a string
+ * 
+ * @param {String} msg input message
+ * @param {Number} _level log level (1-3 : INFO-ERROR)
+ * @param {String} _tag additional tag
+ */
+module.exports.log = (msg, _level, _tag) => {
+    const options = {
+        timeZone: 'Asia/Bangkok',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric'
+    }
+    const formatter = new Intl.DateTimeFormat([], options)
+    const u = formatter.format(new Date())
+    const r = msg.endsWith('\r')
+    const t = require('worker_threads')
+    const w = t.isMainThread ? 'Main' : `Worker #${t.threadId}`
+    const l = _level || 1
+
+    let c = undefined
+    try {
+        c = require('chalk')
+    } catch (e) {
+        // chalk not found
+    }
+
+    _tag && (msg = `${_tag} ${msg}`)
+    switch (l) {
+        case 1:
+            msg = (c ? c.gray(`[${u} - ${w} - INFO]`) : `[${u} - ${w} - INFO]`) + ` ${msg}`
+            break
+        case 2:
+            msg = (c ? c.yellow(`[${u} - ${w} - WARN]`) : `[${u} - ${w} - WARN]`) + ` ${msg}`
+            break
+        case 3:
+            msg = (c ? c.red(`[${u} - ${w} - ERROR]`) : `[${u} - ${w} - ERROR]`) + ` ${msg}`
+            break
+        default:
+            msg = (c ? c.gray(`[${u} - ${w} - INFO]`) : `[${u} - ${w} - INFO]`) + ` ${msg}`
+    }
+
+    r && (msg = msg.slice(0, -1))
+    msg = msg.fillWith(' ', process.stdout.columns)
+    msg += r ? '\r' : '\n'
+
+    process.stdout.write(`${msg}`)
+}
+// ===================================== Logger =====================================
+
+
+
+// ===================================== RGB2Hex =====================================
+/**
+ * Convert RGB color to Hex
+ *
+ * @param {String} rgb rgb color
+ * @returns {String} hex color
+ */
+module.exports.rgb2hex = (rgb) => rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/).slice(1).map(n => parseInt(n, 10).toString(16).padStart(2, '0')).join('')
+// ===================================== RGB2Hex =====================================
+
+
+
 // ===================================== Promise =====================================
 /**
- * Resolve a promise with following function
+ * Execute function as promise
+ * 
  * @param {number} ms Timeout
  * @param {() => void} callback Function to execute
  * @returns
@@ -172,20 +236,3 @@ module.exports.filter = (a, fn) => {
 module.exports.resolve = (callback, ms) =>
     new Promise((resolve) => setTimeout(() => resolve(callback), ms ? ms : 25))
 // ===================================== Promise =====================================
-
-
-
-// ===================================== JSON Compress =====================================
-/**
- * Compress json into lzw String
- * @param {Object|Array} json input json
- * @returns {String} output string
- */
-module.exports.zip = json => require('lz-string').compress(require('jsonpack').pack(json))
-/**
- * Decompress lzw string into json
- * @param {String} lzw input string
- * @returns {Object} output json
- */
-module.exports.unzip = lzw => require('jsonpack').unpack(require('lz-string').decompress(lzw))
-// ===================================== JSON Compress =====================================

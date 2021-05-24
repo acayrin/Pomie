@@ -11,7 +11,7 @@ module.exports = {
             client.channels.fetch(msg.channelID).then(channel => {
                 channel.messages.fetch(msg.id).then(m => {
                     client.database.set('lastUsed', Date.now())
-                    u.resolve(ch.exec(m), 0)
+                    u.resolve(ch.exec(m))
                 })
             })
         } catch (e) {
