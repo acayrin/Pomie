@@ -6,7 +6,7 @@ const client = new Discord.Client({
     messageSweepInterval: 3,
     messageEditHistoryMaxSize: 0,
     cacheGuilds: true,
-    cacheChannels: false,
+    cacheChannels: true,
     cacheOverwrites: false,
     cacheRoles: false,
     cacheEmojis: false,

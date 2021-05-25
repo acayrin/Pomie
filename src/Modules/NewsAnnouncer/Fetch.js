@@ -1,4 +1,5 @@
 const jq = require('jquery')
+const ut = require('../Utils')
 const nf = require('node-fetch')
 const { JSDOM } = require('jsdom')
 
@@ -38,16 +39,17 @@ module.exports = {
         content.find('a[href="#top"]').remove()
 
         if (!client.database.get('NewsID')) {
+            ut.log('News not found')
             client.database.set('NewsID', id)
         }
-
         if (client.database.get('NewsID') !== id) {
+            ut.log(`News changed to ${id}`)
             try {
                 client.database.set('NewsID', id)
 
                 client.guilds.fetch().then(Gs => Gs.forEach(G =>
                     G.channels.fetch().then(chs => chs.forEach(cc => cc.children && cc.children.forEach(async ch => {
-                        if (ch.type !== 'text' || !G.me.hasPermission("MANAGE_WEBHOOKS")) {
+                        if (ch.type !== 'text') {
                             return
                         }
 
