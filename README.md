@@ -15,25 +15,21 @@ a valid data file looks like:
 ```Json
 {
     "version": 123456,
-    "index": [ // required
-        // array of Items, check below
+    "index": [
+        "Item data goes here"
     ],
-    "toram": { // optional
-        "level_cap": 230, // toram level cap
+    "toram": {
+        "level_cap": 230,
         "game_tips": [
-            // array of in-game tips...
             "some game tip",
         ],
         "ignore_leveling_id": [
-            // array of IDs to ignore...
             "some mob id",
         ],
         "ignore_leveling_name": [
-            // array of Names to ignore...
             "some mob name",
         ],
         "ignore_leveling_maps": [
-            // array of Map IDs to ignore...
             "some map name",
         ]
     }
