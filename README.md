@@ -1,12 +1,33 @@
 ## Sakagiri
-#### a Discord bot for Toram Online
-
-- Used Discord.JS
-- Data source: [Coryn club](https://coryn.club/)
+#### a discord bot for toram online
 
 <hr>
 
-### Data file
+### run
+- ``npm start`` (prod) | ``npm run dev`` (dev)
+
+### require
+
+- nodejs >= 14.16
+- discord bot token
+- a data file (below)
+- (opt) heroku, cuz lol
+
+<hr>
+
+## setup
+
+### install dependencies
+- command ``npm i``
+
+### set local variables
+
+- ``DISCORD_BOT_TOKEN`` - the bot token (required)
+- ``DISCORD_DATA_URL`` - url/path to data file (required)
+- ``DISCORD_MAX_THREADS`` - number of threads to run (default 2, or edit in [Config.js](src/Config.js))
+- ``DISCORD_PREFIX`` - bot prefix (default ``-s``, or edit in [Config.js](src/Config.js))
+
+### data file
 a data file is required to run the bot which is loaded via ``DISCORD_DATA_URL`` env variable
 
 the ``DISCORD_DATA_URL`` can either be a valid URL to the file, or path to a local file
@@ -35,7 +56,8 @@ a valid data file looks like:
     }
 }
 ```
-#### Item type: Item
+### item types
+#### item type: Item
 ```Json
 {
     "id": "T69",
@@ -80,7 +102,7 @@ a valid data file looks like:
     }
 }
 ```
-#### Item type: Monster
+#### item type: Monster
 ```Json
 {
       "id": "E69",
@@ -104,7 +126,7 @@ a valid data file looks like:
     ]
 }
 ```
-#### Item type: Map
+#### item type: Map
 ```Json
 {
     "id": "M69",
@@ -115,6 +137,10 @@ a valid data file looks like:
     ]
 }
 ```
-
 <hr>
+
+**credits**
+
+- data source: [Coryn club](https://coryn.club/)
+
 p/s: name taken from *CP: Another Child*

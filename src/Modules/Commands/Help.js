@@ -18,8 +18,8 @@ module.exports = {
         for (const _c of message.client.commands.keys()) {
             const e = message.client.commands.get(_c)
             if (e.name && !e.hidden) {
-                e.name += e.short ? `|${e.short}` : ''
-                embed.addField(`\`\`${e.name}\`\``, e.desc, true)
+                const name = e.name + (e.short ? `|${e.short}` : '')
+                embed.addField(`\`\`${name}\`\``, e.desc, true)
             }
         }
 

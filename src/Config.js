@@ -39,7 +39,7 @@ module.exports = {
     // bot options
     NAME                 : 'Sakagiri',                          // bot name
     COLOR                : '#c91417',                           // bot color, for discord embed
-    MAIN_PREFIX          : process.env.PREFIX || '-s',          // bot command prefix
+    MAIN_PREFIX          : process.env.DISCORD_PREFIX || '-s',  // bot command prefix
     HEROKU               : true,                                // run the bot as heroku dyno (affects maxOldGenerationSizeMb for Worker)
 
     // toram related (optional)
