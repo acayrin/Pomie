@@ -1,5 +1,6 @@
 const fs = require('fs')
 const dc = require('discord.js-light')
+const cf = require('../../../Config')
 const ut = require('../../../Modules/Utils')
 const { parentPort } = require('worker_threads')
 
@@ -22,7 +23,7 @@ module.exports = {
             }
         }
         client.database.set('Emojis', emotes)
-        client.database.set('Index', JSON.parse(fs.readFileSync(`${__dirname}/../../../Sakagiri.json`, 'utf-8')).index)
+        client.database.set('Index', cf.ITEM_INDEX)
         client.database.set('active', true)
 
         parentPort.postMessage({ active: true })

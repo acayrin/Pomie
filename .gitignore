@@ -3,6 +3,7 @@
 .scrap
 target
 package-lock.json
+vercel
 
 # Logs
 logs

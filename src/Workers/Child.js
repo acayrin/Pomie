@@ -1,7 +1,5 @@
-const fs = require('fs')
 const c = require('../Config')
 const Discord = require('discord.js-light')
-const { parentPort } = require('worker_threads')
 const client = new Discord.Client({
     messageCacheMaxSize: 50,
     messageCacheLifetime: 3,
@@ -40,6 +38,10 @@ const client = new Discord.Client({
         'webhookUpdate'
     ]
 })
+const {
+    parentPort
+} = require('worker_threads')
+const fs = require('fs')
 
 module.exports = {
     _bot() {

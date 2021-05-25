@@ -11,7 +11,7 @@ module.exports = {
         if (emoji) {
             return _url ? emoji.url : `<:${emoji.identifier}>`
         } else {
-            return undefined
+            return 'X'
         }
     }
 }

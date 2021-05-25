@@ -1,13 +1,13 @@
-const os = require('node-os-utils')
+const pid = require('pidusage')
 const Discord = require('discord.js')
 const config = require('../../Config')
 const utils = require('../../Modules/Utils')
 
 module.exports = {
-    name: 'status',
-    desc: 'Display bot status',
-    hidden: true,
+    name: 'stats',
+    desc: 'Display bot stats',
     async exec(message) {
+        const info  = await pid(process.pid)
         const embed = new Discord.MessageEmbed()
             .setColor(config.COLOR)
             .setTitle('ＳＡＫＡＧＩＲＩ')
@@ -22,8 +22,8 @@ module.exports = {
             .addField(`Uptime`, utils.time_format(message.client.uptime / 1000), true)
             .addField(`Servers`, message.client.guilds.cache.size, true)
 
-            .addField(`CPU`, await os.cpu.usage() + ' %', true)
-            .addField(`Memory`, (process.memoryUsage().rss / 1024 / 1024).toFixed(2) + ' mb', true)
+            .addField(`CPU`, info.cpu.toFixed(2) + ' %', true)
+            .addField(`Memory`, (info.memory / 1000000).toFixed(2) + ' mb', true)
             .addField(`\u200B`, `\u200B`, true)
 
         return message.channel.send(embed)

@@ -1,5 +1,3 @@
-const C = require('../Config')
-
 module.exports = {
     exec(message) {
         const m = message.content.split(' ')
