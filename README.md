@@ -14,25 +14,25 @@ the ``DISCORD_DATA_URL`` can either be a valid URL to the file, or path to a loc
 a valid data file looks like:
 ```Json
 {
-    version: number,
-    index: [ // required
+    "version": 123456,
+    "index": [ // required
         // array of Items, check below
     ],
-    toram: { // optional
-        level_cap: number, // toram level cap
-        game_tips: [
+    "toram": { // optional
+        "level_cap": 230, // toram level cap
+        "game_tips": [
             // array of in-game tips...
             "some game tip",
         ],
-        ignore_leveling_id: [
+        "ignore_leveling_id": [
             // array of IDs to ignore...
             "some mob id",
         ],
-        ignore_leveling_name: [
+        "ignore_leveling_name": [
             // array of Names to ignore...
             "some mob name",
         ],
-        ignore_leveling_maps: [
+        "ignore_leveling_maps": [
             // array of Map IDs to ignore...
             "some map name",
         ]
@@ -77,8 +77,8 @@ a valid data file looks like:
         "difficulty": 1,
         "materials": [
             {
-                item: "T1",
-                amount: 1
+                "item": "T1",
+                "amount": 1
             }
         ]
     }
@@ -111,10 +111,10 @@ a valid data file looks like:
 #### Item type: Map
 ```Json
 {
-    id: "M69",
-    name: "Test map",
-    type: "Map",
-    mobs: [
+    "id": "M69",
+    "name": "Test map",
+    "type": "Map",
+    "mobs": [
         "E69"
     ]
 }
