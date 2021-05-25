@@ -1,12 +1,12 @@
-const Utils = require('../../../Modules/Utils')
-const client = require('../../Main').client
+const ut = require('../../../Modules/Utils')
+const cl = require('../../Main').client
 
 module.exports = {
     name: ['SIGTERM', 'SIGINT'],
     process: true,
     exec() {
-        Utils.log(`Shutting down. Goodbye...`)
-        client.destroy()
+        ut.log(`Shutting down. Goodbye...`)
+        cl.destroy()
         process.exit()
     }
 }

@@ -1,56 +1,46 @@
-const fs = require('fs')
-const pt = require('path')
-const de = require('deasync')
-const nf = require('node-fetch')
-const ut = require('./Modules/Utils')
-const pk = require('../package.json')
+const w = require('worker_threads')
+const p = require('../package.json')
+const c = require('./Modules/Config')
+const d = c.load(process.env.DISCORD_DATA_URL)
 
-let db   = undefined
-// try to fetch the data file via url
-nf(process.env.DISCORD_DATA_URL)
-    .then(t => t.text())
-    .then(e => {
-        db = JSON.parse(e)
-        ut.log('Found remote data file')
-    })
-    .catch(e => {
-        // else fetch the data file locally
-        try {
-            db = JSON.parse(fs.readFileSync(pt.resolve(process.env.DISCORD_DATA_URL), 'utf-8'))
-            ut.log('Found local data file')
-        } catch (f) {
-            // if neither worked
-            ut.log(`Failed to load data file`, 3)
-            ut.log(`${e}`, 3)
-            ut.log(`${f}`, 3)
-            process.exit()
-        }
-    })
-de.loopWhile(() => !db)
+/**
+ * watch for data version changes
+ * note:
+ *   this will cause downtime whenever the data file is changed
+ *   comment the line to disable it
+ */
+w.isMainThread && c.run(d.version)
 
 
-
+/**
+ * Configuration variables
+ * 
+ * You may edit these to your likings
+ */
 module.exports = {
     // discord
     DISCORD_BOT_TOKEN    : process.env.DISCORD_BOT_TOKEN,       // discord bot token, from developer portal
-    DISCORD_DATA_URL     : process.env.DISCORD_DATA_URL,        // bot datafile, manually generated, can be local file or remote url
+    DISCORD_DATA_URL     : process.env.DISCORD_DATA_URL,        // bot data file, manually generated, can be path to local file or remote url
     DISCORD_MAX_THREADS  : process.env.DISCORD_MAX_THREADS || 2,// number of threads to run
 
     // bot options
     NAME                 : 'Sakagiri',                          // bot name
+    FANCY_NAME           : 'ＳＡＫＡＧＩＲＩ',                     // bot fancy name, mainly for 'help' and 'stats' command, fallback to NAME
     COLOR                : '#c91417',                           // bot color, for discord embed
     MAIN_PREFIX          : process.env.DISCORD_PREFIX || '-s',  // bot command prefix
+    COOLDOWN             : 3,                                   // bot cooldown between commands, in seconds
     HEROKU               : true,                                // run the bot as heroku dyno (affects maxOldGenerationSizeMb for Worker)
 
-    // toram related (optional)
-    ITEM_INDEX           : db.index,                            // toram items, DO NOT CHANGE
-    LEVEL_CAP            : db.toram.level_cap            || 230,// toram level cap
-    GAME_TIPS            : db.toram.game_tips            || [], // toram ingame tips
-    IGNORE_LEVELING_ID   : db.toram.ignore_leveling_id   || [], // toram ignore leveling Ids
-    IGNORE_LEVELING_NAME : db.toram.ignore_leveling_name || [], // toram ignore leveling name
-    IGNORE_LEVELING_MAP  : db.toram.ignore_leveling_map  || [], // toram ignore leveling maps
+    // toram related
+    // by default, the data comes from the data file
+    ITEM_INDEX           : d.index,                            // toram items, required (needed for item search and level guide)
+    LEVEL_CAP            : d.toram.level_cap            || 230,// toram level cap, soft required (needed to calculate exp bonus for level guide)
+    GAME_TIPS            : d.toram.game_tips            || [], // toram ingame tips, optional
+    IGNORE_LEVELING_ID   : d.toram.ignore_leveling_id   || [], // toram ignore leveling ids, optional
+    IGNORE_LEVELING_NAME : d.toram.ignore_leveling_name || [], // toram ignore leveling name, optional
+    IGNORE_LEVELING_MAP  : d.toram.ignore_leveling_map  || [], // toram ignore leveling maps ids, optional
 
     // etc (for bot own usage, no need to modify)
-    VERSION_BOT          : pk.version,
-    VERSION_DB           : db.version
+    VERSION_BOT          : p.version,
+    VERSION_DB           : d.version
 }

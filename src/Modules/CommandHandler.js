@@ -11,7 +11,7 @@ module.exports = {
         if (c4) {
             if (c4.role && !message.member.hasPermission(c4.role)) {
                 message.channel.send('Insufficient permissions')
-            } else {
+            } else if (!c4.disabled) {
                 c4.exec(message, c3)
             }
         } else if (c2) {

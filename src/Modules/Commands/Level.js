@@ -63,7 +63,7 @@ module.exports = {
                 break
             }
             default:
-                message.channel.send('Something went wrong, please check your input or try again later')
+                message.channel.send(json.err)
         }
     }
 }

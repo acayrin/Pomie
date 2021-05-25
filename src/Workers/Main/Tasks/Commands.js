@@ -1,5 +1,4 @@
-const bot = require('../../Main')
-const db = bot.client.database
+const db = require('../../Main').client.database
 
 module.exports = {
     name: 'proc_cmd',

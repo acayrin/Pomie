@@ -7,7 +7,7 @@ module.exports = {
     exec(message) {
         const embed = new d.MessageEmbed()
         .setColor(c.COLOR)
-        .setTitle('ＳＡＫＡＧＩＲＩ')
+        .setTitle(c.FANCY_NAME || c.NAME)
         .setDescription(`a Discord bot for Toram Online`)
         .setThumbnail(message.client.user.avatarURL())
         .addField(`\u200B`, `\u200B`)
@@ -17,14 +17,14 @@ module.exports = {
 
         for (const _c of message.client.commands.keys()) {
             const e = message.client.commands.get(_c)
-            if (e.name && !e.hidden) {
+            if (e.name && !e.disabled) {
                 const name = e.name + (e.short ? `|${e.short}` : '')
                 embed.addField(`\`\`${name}\`\``, e.desc, true)
             }
         }
 
         embed
-        .addField('\u200B', 'For detailed help, please check https://acayrin.github.io/sakagiri/commands/')
+        .addField('\u200B', 'For detailed usage, please check https://acayrin.github.io/sakagiri/commands/')
         .addField('Credits', '\u200B')
         .addField(`${c.NAME} (A:${c.VERSION_BOT} - DB:${c.VERSION_DB})`, 'by **acayrin**')
         .addField(`Data source`, `Coryn Club @ Cruithne https://coryn.club/`)

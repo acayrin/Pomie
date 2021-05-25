@@ -5,6 +5,11 @@ const { getExpBonus } = require('./CalcBonus')
 const { getMobList } = require('./MonsterList')
 
 module.exports.getLevelGuide = async (args) => {
+    // missing arguments
+    if (!args) {
+        return { err: 'Missing arguments' }
+    }
+    
     // variables
     const res    = {}
     let   _bonus = 50
@@ -19,7 +24,6 @@ module.exports.getLevelGuide = async (args) => {
     // filter through arguments
     const _aa = args.split(' ')
     for (const _a of _aa) {
-        const _v = _aa[_aa.indexOf(_a) + 1]
         switch (_a) {
             case '-a':
             case '--auto':
@@ -28,7 +32,10 @@ module.exports.getLevelGuide = async (args) => {
                 break
             case '-e':
             case '--exp':
-                _bonus = Number(_v)
+                const _v = _aa[_aa.indexOf(_a) + 1]
+                if (_v && !isNaN(_v)) {
+                    _bonus = Number(_v)
+                }
                 _bb = _bb.replace(_a, '').replace(_v, '').trim()
                 break
             case '-b':
@@ -75,12 +82,12 @@ module.exports.getLevelGuide = async (args) => {
     }
 
     // get data
-    const total = await getMobList(level, _bonus.includes('auto') ? getExpBonus(level) : _bonus)
+    const total = await getMobList(level, _bonus === 'auto' ? getExpBonus(level) : _bonus)
 
     // if no result
     if (total.length === 0) {
         return {
-            err: 'not found'
+            err: 'No suitable mobs found'
         }
     }
 
@@ -98,7 +105,7 @@ module.exports.getLevelGuide = async (args) => {
             _level = Number(level) + 50
         }
 
-        // message
+        // json
         res.type  = 2
         res.s_lvl = level
         res.d_lvl = _level
@@ -122,7 +129,7 @@ module.exports.getLevelGuide = async (args) => {
         for (let _lvl = Number(level); _lvl < _alevel; _lvl++) {
             // variables
             const _fcount      = (_lvl - _clevel) + 1
-            const _ebonus      = _bonus.includes('auto') ? getExpBonus(_lvl + 1) : _bonus
+            const _ebonus      = _bonus === 'auto' ? getExpBonus(_lvl + 1) : _bonus
 
             const _mlist       = await getMobList(_lvl,     _cbonus)
             const _mlist_2     = await getMobList(_lvl + 1, _cbonus)
@@ -206,7 +213,7 @@ module.exports.getLevelGuide = async (args) => {
                                  ((_norm ? _norm[0].id : undefined)  !== (_norm_2 ? _norm_2[0].id : undefined)) ||
                                  (_cbonus                            !== _ebonus)
 
-            // add up the message
+            // add up the json
             if (_lvl !== _clevel && diff || (_lvl + 1 === _alevel)) {
                 // variables
                 let _boss_exp_avg = Math.round(_boss_exp / (_fcount === 0 ? 1 : _fcount)).toLocaleString()
@@ -215,16 +222,16 @@ module.exports.getLevelGuide = async (args) => {
 
                 json.s_lvl = _clevel
                 json.d_lvl = _lvl
-                json.b_exp = _bonus.includes('auto') ? _cbonus : undefined
+                json.b_exp = _bonus === 'auto' ? _cbonus : undefined
 
                 // if boss exist
                 if (_boss) {
                     json.boss = {
-                        id: _boss[0].id,
-                        name: _boss[0].name,
-                        type: _boss[0].type,
+                        id   : _boss[0].id,
+                        name : _boss[0].name,
+                        type : _boss[0].type,
                         level: _boss[0].level,
-                        exp: _boss_exp_avg,
+                        exp  : _boss_exp_avg,
                         count: _boss_count === 0 ? 1 : _boss_count
                     }
                 }
@@ -232,11 +239,11 @@ module.exports.getLevelGuide = async (args) => {
                 // if mini exist
                 if (_mini) {
                     json.mini = {
-                        id: _mini[0].id,
-                        name: _mini[0].name,
-                        type: _mini[0].type,
+                        id   : _mini[0].id,
+                        name : _mini[0].name,
+                        type : _mini[0].type,
                         level: _mini[0].level,
-                        exp: _mini_exp_avg,
+                        exp  : _mini_exp_avg,
                         count: _mini_count === 0 ? 1 : _mini_count
                     }
                 }
@@ -244,11 +251,11 @@ module.exports.getLevelGuide = async (args) => {
                 // if normal exist
                 if (_norm) {
                     json.norm = {
-                        id: _norm[0].id,
-                        name: _norm[0].name,
-                        type: _norm[0].type,
+                        id   : _norm[0].id,
+                        name : _norm[0].name,
+                        type : _norm[0].type,
                         level: _norm[0].level,
-                        exp: _norm_exp_avg,
+                        exp  : _norm_exp_avg,
                         count: _norm_count === 0 ? 1 : _norm_count
                     }
                 }
@@ -296,7 +303,7 @@ module.exports.getLevelGuide = async (args) => {
             const _e     = _fec[1]
             const _times = Math.round(getExp(level) / _e)
 
-            // message
+            // json
             res.list.push({
                 id: _json.id,
                 name: _json.name,
@@ -308,7 +315,7 @@ module.exports.getLevelGuide = async (args) => {
         }
     }
 
-    // message
+    // json
     res.timer = Utils.time_format((Date.now() - _timer) / 1000)
     return res
 }

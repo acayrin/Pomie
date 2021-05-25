@@ -168,6 +168,7 @@ String.prototype.fillWith = function (replace, amount, _backward) {
  * @param {String} _tag additional tag
  */
 module.exports.log = (msg, _level, _tag) => {
+    msg = msg.toString()
     const options = {
         timeZone: 'Asia/Bangkok',
         hour: 'numeric',

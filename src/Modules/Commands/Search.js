@@ -1,49 +1,61 @@
-const Utils = require('../Utils')
-const fsort = require('fast-sort')
-const regexAR = /(?:[^\s"]+|"[^"]*")/g
-const regexID = /^(?:[a-z][0-9]+)[a-z0-9]*$/ig
-const client = require('../../Workers/Child')._bot()
+const ut = require('../Utils')
+const fs = require('fast-sort')
+const r1 = /(?:[^\s"]+|"[^"]*")/g
+const r2 = /^(?:[a-z][0-9]+)[a-z0-9]*$/ig
+const cl = require('../../Workers/Child')._bot()
 
 module.exports = {
     name: 'search',
     desc: 'Search for an in-game item',
     async exec(message, search) {
-        let list = client.database.get('Index')
+        let list = cl.database.get('Index')
         let type = undefined
         let page = 1
         let filters = []
 
-        const _aa = search.match(regexAR)
-        for (const _a of _aa) {
-            const _v = _aa[_aa.indexOf(_a) + 1]
-            switch (_a) {
-                case '-p':
-                case '--page':
-                    page = Number(_v)
-                    search = search.replace(_a, '').replace(_v, '').trim()
-                    break
-                case '-t':
-                case '--type':
-                    type = _v.replace(/"/g, '')
-                    search = search.replace(_a, '').replace(_v, '').trim()
-                    break
-                case '-f':
-                case '--filter':
-                    filters = _v.replace(/"/g, '').split(";")
-                    search = search.replace(_a, '').replace(_v, '').trim()
-                    break
-                default:
-                    // empty
+        const _aa = search.match(r1)
+        if (_aa) {
+            for (const _a of _aa) {
+                const _v = _aa[_aa.indexOf(_a) + 1]
+                switch (_a) {
+                    case '-p':
+                    case '--page':
+                        if (!_v) {
+                            return message.channel.send(`Missing argument after **${_a}**`)
+                        }
+                        if (isNaN(_v)) {
+                            return message.channel.send(`Invalid page number **${_v}**`)
+                        }
+                        page = Number(_v)
+                        search = search.replace(_a, '').replace(_v, '').trim()
+                        break
+                    case '-t':
+                    case '--type':
+                        if (!_v) {
+                            return message.channel.send(`Missing argument after **${_a}**`)
+                        }
+                        type = _v.replace(/"/g, '')
+                        search = search.replace(_a, '').replace(_v, '').trim()
+                        break
+                    case '-f':
+                    case '--filter':
+                        if (!_v) {
+                            return message.channel.send(`Missing argument after **${_a}**`)
+                        }
+                        filters = _v.replace(/"/g, '').split(";")
+                        search = search.replace(_a, '').replace(_v, '').trim()
+                        break
+                    default:
+                        // empty
+                }
             }
         }
 
-        if (regexID.test(search)) {
+        if (r2.test(search)) {
             let f = false
             let i = list.length
-            while (i > 0) {
-                i--
-
-                if (list[i].id.toLowerCase() === search.match(regexID).shift().toLowerCase()) {
+            while (--i > 0) {
+                if (list[i].id.toLowerCase() === search.match(r2).shift().toLowerCase()) {
                     list = [list[i]]
                     f = true
                     break
@@ -53,17 +65,20 @@ module.exports = {
                 list = []
             }
         } else if (search !== '*' && search !== 'all') {
-            list = await Utils.resolve(require('../Search/Modules/loopSearch').loopSearch(search, list))
+            list = await ut.resolve(require('../Search/Modules/loopSearch').loopSearch(search, list))
         }
         if (type) {
-            list = await Utils.resolve(require('../Search/Modules/loopType').loopType(type, list))
+            list = await ut.resolve(require('../Search/Modules/loopType').loopType(type, list))
         }
         if (filters.length > 0) {
-            list = await Utils.resolve(require('../Search/Modules/loopFilter').loopFilter(filters, list))
+            list = await ut.resolve(require('../Search/Modules/loopFilter').loopFilter(filters, list))
         }
 
         if (!message) {
             return list
+        }
+        if (list.err) {
+            return message.channel.send(list.err)
         }
         if (list.length === 0) {
             message.channel.send('Nothing but dust')
@@ -71,7 +86,7 @@ module.exports = {
         }
 
         if (list.length > 1) {
-            list = fsort.inPlaceSort(list).by([{
+            list = fs.inPlaceSort(list).by([{
                 asc: i => i.id.length
             }, {
                 desc: e => e.id.match(/\d+/g).shift()

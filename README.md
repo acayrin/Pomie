@@ -1,5 +1,7 @@
 ## Sakagiri
-#### a discord bot for toram online
+#### a discord bot, for toram online
+
+cuz why not
 
 <hr>
 
@@ -9,25 +11,31 @@
 ### require
 
 - nodejs >= 14.16
-- discord bot token
+- a discord bot token
 - a data file (below)
-- (opt) heroku, cuz lol
 
 <hr>
 
 ## setup
 
-### install dependencies
+#### install dependencies
 - command ``npm i``
 
-### set local variables
+#### configuration
+
+**local variables**
 
 - ``DISCORD_BOT_TOKEN`` - the bot token (required)
 - ``DISCORD_DATA_URL`` - url/path to data file (required)
-- ``DISCORD_MAX_THREADS`` - number of threads to run (default 2, or edit in [Config.js](src/Config.js))
-- ``DISCORD_PREFIX`` - bot prefix (default ``-s``, or edit in [Config.js](src/Config.js))
+- ``DISCORD_MAX_THREADS`` - number of threads to run (default 2)
 
-### data file
+**config file**
+
+you can modify your config in [Config.js](./src/Config.js)
+
+<hr>
+
+## data file
 a data file is required to run the bot which is loaded via ``DISCORD_DATA_URL`` env variable
 
 the ``DISCORD_DATA_URL`` can either be a valid URL to the file, or path to a local file
@@ -56,7 +64,7 @@ a valid data file looks like:
     }
 }
 ```
-### item types
+## item types
 #### item type: Item
 ```Json
 {
@@ -139,7 +147,7 @@ a valid data file looks like:
 ```
 <hr>
 
-**credits**
+## credits
 
 - data source: [Coryn club](https://coryn.club/)
 
