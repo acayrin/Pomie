@@ -1,7 +1,7 @@
 const fs = require('fs')
-const config = require('../Config')
-const Discord = require('discord.js-light')
-const client = new Discord.Client({
+const cf = require('../Config')
+const dc = require('discord.js-light')
+const client = new dc.Client({
     messageCacheMaxSize: 300,
     messageCacheLifetime: 3,
     messageSweepInterval: 3,
@@ -39,7 +39,7 @@ const client = new Discord.Client({
     ],
     presence: {
         activity: {
-            name: `with my friend '${config.MAIN_PREFIX} help'`,
+            name: `with my friend '${cf.MAIN_PREFIX} help'`,
             type: 'PLAYING'
         }
     }
@@ -52,7 +52,7 @@ module.exports = {
      */
     start() {
         // client data
-        client.database = new Discord.Collection()
+        client.database = new dc.Collection()
         client.database.set('Workers', [])
         client.database.set('Queue', [])
 
@@ -63,12 +63,12 @@ module.exports = {
             if (Array.isArray(ev.name)) {
                 for (const n of ev.name) {
                     ev.process ?
-                        process.on(n, (v) => ev.exec(v)) :
+                        process.on(n, v => ev.exec(v)) :
                         client.on(n, a => ev.exec(a))
                 }
             } else {
                 ev.process ?
-                    process.on(ev.name, (v) => ev.exec(v)) :
+                    process.on(ev.name, v => ev.exec(v)) :
                     client.on(ev.name, a => ev.exec(a))
             }
         }
@@ -79,6 +79,6 @@ module.exports = {
         }
 
         // login
-        client.login(config.DISCORD_BOT_TOKEN)
+        client.login(cf.DISCORD_BOT_TOKEN)
     }
 }

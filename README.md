@@ -6,7 +6,7 @@ cuz why not
 <hr>
 
 ### run
-- ``npm start`` (prod) | ``npm run dev`` (dev)
+- ``npm start``
 
 ### require
 
@@ -19,7 +19,7 @@ cuz why not
 ## setup
 
 #### install dependencies
-- command ``npm i``
+- run ``npm i``
 
 #### configuration
 
@@ -31,7 +31,7 @@ cuz why not
 
 **config file**
 
-you can modify your config in [Config.js](./src/Config.js)
+you can modify your config in [Config.js](./Sakagiri/Config.js)
 
 <hr>
 

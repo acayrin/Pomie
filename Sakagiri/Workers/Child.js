@@ -1,6 +1,7 @@
-const c = require('../Config')
-const Discord = require('discord.js-light')
-const client = new Discord.Client({
+const fs = require('fs')
+const cf = require('../Config')
+const dc = require('discord.js-light')
+const client = new dc.Client({
     messageCacheMaxSize: 50,
     messageCacheLifetime: 3,
     messageSweepInterval: 3,
@@ -41,7 +42,6 @@ const client = new Discord.Client({
 const {
     parentPort
 } = require('worker_threads')
-const fs = require('fs')
 
 module.exports = {
     client,
@@ -60,6 +60,6 @@ module.exports = {
         }
 
         // login
-        client.login(c.DISCORD_BOT_TOKEN)
+        client.login(cf.DISCORD_BOT_TOKEN)
     }
 }

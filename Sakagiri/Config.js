@@ -6,7 +6,7 @@ const d = c.load(process.env.DISCORD_DATA_URL)
 /**
  * watch for data version changes
  * note:
- *   this will cause downtime whenever the data file is changed
+ *   this will cause downtime whenever the data file changes
  *   comment the line to disable it
  */
 w.isMainThread && c.run(d.version)
@@ -14,7 +14,7 @@ w.isMainThread && c.run(d.version)
 
 /**
  * Configuration variables
- * 
+ *
  * You may edit these to your likings
  */
 module.exports = {
@@ -27,7 +27,7 @@ module.exports = {
     NAME                 : 'Sakagiri',                          // bot name
     FANCY_NAME           : 'ＳＡＫＡＧＩＲＩ',                     // bot fancy name, mainly for 'help' and 'stats' command, fallback to NAME
     COLOR                : '#c91417',                           // bot color, for discord embed
-    MAIN_PREFIX          : process.env.DISCORD_PREFIX || '-s',  // bot command prefix
+    MAIN_PREFIX          : process.env.DISCORD_PREFIX || '-s',  // bot command prefix (DISCORD_PREFIX is optional, for local testing)
     COOLDOWN             : 3,                                   // bot cooldown between commands, in seconds
     HEROKU               : true,                                // run the bot as heroku dyno (affects maxOldGenerationSizeMb for Worker)
 

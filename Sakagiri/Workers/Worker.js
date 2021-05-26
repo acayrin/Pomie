@@ -27,7 +27,7 @@ module.exports = {
         })
 
         // on message
-        child.on('message', (e) => {
+        child.on('message', e => {
             if (db.get('Workers').indexOf(child) === -1 && e.active) {
                 db.set('Workers', db.get('Workers').concat(child))
             }
