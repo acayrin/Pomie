@@ -1,14 +1,14 @@
 {
-    "name": "Sakagiri",
-    "version": "1.0.8",
+    "name": "sakagiri",
+    "version": "1.0.69",
     "engines": {
         "node": "14.x",
         "npm": "7.x"
     },
-    "main": "src/Sakagiri.js",
+    "main": "Sakagiri/index.js",
     "scripts": {
-        "start": "node --max-old-space-size=1024 src/Sakagiri.js",
-        "dev": "node -r dotenv/config src/Sakagiri.js"
+        "start": "node --max-old-space-size=1024 Sakagiri/index.js",
+        "dev": "node -r dotenv/config Sakagiri/index.js"
     },
     "dependencies": {
         "bufferutil": "^4.0.3",
