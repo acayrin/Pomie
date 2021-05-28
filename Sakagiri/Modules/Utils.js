@@ -55,13 +55,13 @@ module.exports = {
      * @param {Object|Array} json input json
      * @returns {String} output string
      */
-    zip: obj => require('lz-string').compress(require('jsonpack').pack(obj)),
+    zip: obj => require('lz-string').compress(JSON.stringify(obj)),
     /**
      * decompress lzw string into object
      * @param {String} lzw input string
      * @returns {Object} output object
      */
-    unzip: lzw => require('jsonpack').unpack(require('lz-string').decompress(lzw)),
+    unzip: lzw => JSON.parse(require('lz-string').decompress(lzw)),
     /**
      * Log a string
      * @param {String} msg input message

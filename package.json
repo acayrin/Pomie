@@ -20,7 +20,6 @@
         "fast-sort": "^3.0.2",
         "jquery": "^3.6.0",
         "jsdom": "^16.5.3",
-        "jsonpack": "^1.1.5",
         "lz-string": "^1.4.4",
         "node-fetch": "^2.6.1",
         "pidusage": "^2.0.21",
