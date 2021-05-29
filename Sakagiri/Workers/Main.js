@@ -54,7 +54,6 @@ module.exports = {
         // client data
         client.database = new dc.Collection()
         client.database.set('Workers', [])
-        client.database.set('Queue', [])
 
         // load event listeners
         for (const e of fs.readdirSync(`${__dirname}/Main/Events/`)) {

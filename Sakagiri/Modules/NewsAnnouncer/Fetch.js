@@ -81,8 +81,8 @@ module.exports = {
                         }
                     })))
                 ))
-            } catch (e) {
-                console.log(e)
+            } catch (_) {
+                // ignore missing permissions
             }
         }
     }
