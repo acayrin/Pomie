@@ -29,7 +29,7 @@ module.exports.getLevelGuide = async (args) => {
     if (!args) {
         return { err: 'Missing arguments' }
     }
-    
+
     // variables
     const res    = {}
     let   _bonus = 50

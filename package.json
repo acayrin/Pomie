@@ -15,7 +15,6 @@
         "chalk": "^4.1.1",
         "deasync": "^0.1.21",
         "discord.js-light": "^3.5.10",
-        "discord.js-rate-limiter": "^1.0.7",
         "eval": "^0.1.6",
         "fast-sort": "^3.0.2",
         "jquery": "^3.6.0",

@@ -3,10 +3,12 @@
 
 cuz why not
 
+[Invite the bot](https://discord.com/oauth2/authorize?client_id=828605986511388733&permissions=537168896&scope=bot)
+
 <hr>
 
-### run
-- ``npm start``
+### how to use
+- run ``npm start``
 
 ### require
 
