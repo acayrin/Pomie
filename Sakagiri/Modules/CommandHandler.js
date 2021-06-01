@@ -10,7 +10,7 @@ module.exports = {
         const c1 = m.join(' ')
         const c2 = c1.split(" ").shift().toLowerCase()
         const c3 = c1.slice(c2.length).trim()
-        const c4 = message.client.commands.get(c2) || message.client.commands.find(_c => c2 && _c.short && _c.short.includes(c2))
+        const c4 = message.client.commands.get(c2) || message.client.commands.find(_c => c2 && _c.short && _c.short.toLowerCase() === c2.toLowerCase())
 
         if (c4) {
             if (c4.role && !message.member.hasPermission(c4.role)) {

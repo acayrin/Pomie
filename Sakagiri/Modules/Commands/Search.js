@@ -9,7 +9,7 @@ module.exports = {
         if (list.err) {
             return message.channel.send(list.err)
         } else if (list.length === 0) {
-            return message.channel.send('Nothing but dust')
+            //return message.channel.send('Nothing but dust')
         } else if (list.length > 1) {
             sc.display_all(message, list, page)
         } else {
