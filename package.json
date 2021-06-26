@@ -1,6 +1,6 @@
 {
     "name": "sakagiri",
-    "version": "1.0.69",
+    "version": "1.0.7",
     "engines": {
         "node": "14.x",
         "npm": "7.x"

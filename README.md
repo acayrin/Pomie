@@ -1,6 +1,8 @@
 ## Sakagiri
 #### a discord bot, for toram online
 
+### I won't update much since im kinda lacking interest in playing Toram atm, will keep updating the database from time to time
+
 cuz why not
 
 [Invite the bot](https://discord.com/oauth2/authorize?client_id=828605986511388733&permissions=537168896&scope=bot)

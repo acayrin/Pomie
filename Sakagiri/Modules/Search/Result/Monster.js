@@ -1,6 +1,6 @@
 const Color = require('../../ColorManager')
 const Emote = require('../../EmoteHandler')
-const Search = require('../../Commands/Search')
+const Search = require('../Search')
 
 module.exports.process = async (item, message) => {
     const res = []
@@ -9,7 +9,7 @@ module.exports.process = async (item, message) => {
     let exp = 'Unknown'
     // get map
     if (!item.map.toLowerCase().includes('event')) {
-        const get = Search.process(item.map).shift()
+        const get = Search.process(item.map).list.shift()
         map = `[${get.id}] **${get.name}**`
     }
     // get localized hp
@@ -37,7 +37,7 @@ module.exports.process = async (item, message) => {
     res.push(`> **Item drops** (${item.drops.length} total)`)
     res.push(`>  `)
     for (const drop of item.drops) {
-        const e = Search.process(drop.id).shift()
+        const e = Search.process(drop.id).list.shift()
         const l = []
         const d = []
         const c = []
