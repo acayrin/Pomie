@@ -1,7 +1,7 @@
 ## Sakagiri
 #### a discord bot, for toram online
 
-### I won't update much since im kinda lacking interest in playing Toram atm, will keep updating the database from time to time
+### ehhh
 
 cuz why not
 
