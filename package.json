@@ -7,8 +7,8 @@
 	},
 	"main": "Sakagiri/index.js",
 	"scripts": {
-		"start": "LD_PRELOAD=lib/libmimalloc.so node --max-old-space-size=128 Sakagiri/index.js",
-		"dev": "node -r dotenv/config Sakagiri/index.js"
+		"dev": "node -r dotenv/config Sakagiri/index.js",
+		"start": "node --max-old-space-size=128 Sakagiri/index.js"
 	},
 	"dependencies": {
 		"bufferutil": "^4.0.3",
