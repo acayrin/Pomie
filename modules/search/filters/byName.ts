@@ -1,0 +1,23 @@
+import { Item } from '../../../types/item';
+import { Map } from '../../../types/map';
+import { Monster } from '../../../types/monster';
+import { filter as ufilter } from '../../../utils';
+
+/**
+ * Filter by name
+ *
+ * @export
+ * @param {string} name
+ * @param {(Item | Monster | Map)[]} list
+ * @returns {(Item | Monster | Map)[]}
+ */
+export function filter(name: string, list: (Item | Monster | Map)[]): (Item | Monster | Map)[] {
+	let phrase: string;
+	const phrases = name.replace(/[^a-zA-Z0-9 ]/g, '').split(' ');
+
+	while ((phrase = phrases.shift())) {
+		list = ufilter(list, (item) => new RegExp(phrase, 'i').test(item.name));
+	}
+
+	return list;
+}
