@@ -14,7 +14,8 @@ This is a mod for [Yujin](https://github.com/acayrin/yujin), clone it into `src/
 
 Required additional NPM package(s)
 
--   Firebase
+-   [Firebase](https://www.npmjs.com/package/firebase)
+-   [fast-sort](https://www.npmjs.com/package/fast-sort)
 
 ### configuration
 
