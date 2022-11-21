@@ -8,7 +8,7 @@ import { search as Search } from '../query';
 export async function displayMonster(
 	item: Monster,
 	interaction: Eris.Message | Eris.CommandInteraction,
-	bot: Yujin.Bot,
+	mod: Yujin.Mod,
 ) {
 	let monsterMap = item.map;
 	let monsterHP = 'Unknown';
@@ -16,7 +16,7 @@ export async function displayMonster(
 
 	// get map
 	if (!item.map.toLowerCase().includes('event')) {
-		const mapLookup = (await Search(item.map, bot)).list.shift();
+		const mapLookup = (await Search(item.map, mod)).list.shift();
 		monsterMap = `[${mapLookup.id}] **${mapLookup.name}**`;
 	}
 	// get localized hp
@@ -26,7 +26,7 @@ export async function displayMonster(
 
 	const dropFieldValue: string[] = [];
 	for (const monsterDrop of item.drops) {
-		const dropLookup = (await Search(monsterDrop.id, bot)).list.shift();
+		const dropLookup = (await Search(monsterDrop.id, mod)).list.shift();
 		const line: string[] = [];
 		const lineEmotes: string[] = [];
 		const lineCodes: string[] = [];
@@ -34,7 +34,7 @@ export async function displayMonster(
 		if (monsterDrop.dyes) {
 			for (const dropDye of monsterDrop.dyes) {
 				const dropDyeCode = Color(dropDye);
-				lineEmotes.push(Emote(`:${dropDyeCode}:`, bot.client));
+				lineEmotes.push(Emote(`:${dropDyeCode}:`, mod.bot.client));
 				lineCodes.push(dropDyeCode.replace(/_/g, ''));
 			}
 		}

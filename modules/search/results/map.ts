@@ -3,10 +3,10 @@ import Yujin from '../../../../../core/yujin';
 import { Map } from '../../../types/map';
 import { search as Search } from '../query';
 
-export async function displayMap(item: Map, interaction: Eris.Message | Eris.CommandInteraction, bot: Yujin.Bot) {
+export async function displayMap(item: Map, interaction: Eris.Message | Eris.CommandInteraction, mod: Yujin.Mod) {
 	const monstersFieldValue: string[] = [];
 	for (const monster of item.monsters) {
-		const monsterLookup = (await Search(`${monster} -t monster;miniboss;boss`, bot)).list.shift();
+		const monsterLookup = (await Search(`${monster} -t monster;miniboss;boss`, mod)).list.shift();
 
 		if (monsterLookup) {
 			monstersFieldValue.push(`> [${monsterLookup.id}] **${monsterLookup.name}** (${monsterLookup.type})`);

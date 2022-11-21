@@ -43,7 +43,7 @@ export const slashLevel: ModCommand = {
 		const options = {
 			currentLevel: o.args.find((z) => z.name === 'current_level') as Eris.InteractionDataOptionWithValue,
 			targetLevel: o.args.find((z) => z.name === 'target_level') as Eris.InteractionDataOptionWithValue,
-			filterType: o.args.find((z) => z.name === 'type') as Eris.InteractionDataOptionWithValue,
+			filterType: o.args.find((z) => z.name === 'filter_type') as Eris.InteractionDataOptionWithValue,
 			bonusExp: o.args.find((z) => z.name === 'bonus_exp') as Eris.InteractionDataOptionWithValue,
 		};
 		printGuide(

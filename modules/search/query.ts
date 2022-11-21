@@ -9,9 +9,9 @@ import { filter as filterByType } from './filters/byType';
 const regexParseArguments = /(?:[^\s"]+|"[^"]*")/g;
 const regexParseID = /^(?:[a-z][0-9]+)[a-z0-9]*$/gi;
 
-export function search(searchQuery: string, bot: Yujin.Bot): Promise<{ page: number; list: (Item | Monster | Map)[] }> {
+export function search(searchQuery: string, mod: Yujin.Mod): Promise<{ page: number; list: (Item | Monster | Map)[] }> {
 	return new Promise((resolve, reject) => {
-		let dataList = bot.database.get('pomie_index', undefined) as (Item | Monster | Map)[];
+		let dataList = mod.bot.database.get('pomie_index', mod) as (Item | Monster | Map)[];
 		let searchType: string = undefined;
 		let searchPage = 1;
 		let searchFilters: string[] = [];
@@ -25,7 +25,7 @@ export function search(searchQuery: string, bot: Yujin.Bot): Promise<{ page: num
 					case '-p':
 					case '--page':
 						if (!value) reject(`Missing argument after **${parial}**`);
-						if (isNaN(Number(value))) reject(`Invalid page number **${value}**`);
+						if (Number.isNaN(value)) reject(`Invalid page number **${value}**`);
 
 						searchPage = Number(value);
 

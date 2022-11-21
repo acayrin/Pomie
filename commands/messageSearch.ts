@@ -20,7 +20,7 @@ export const messageSearch: ModCommand = {
 	usage: ['%prefix%%command%', '<search_query (*)>', '[-p <page>]', '[-t <type>]', '[-f <filter>]'].join(' '),
 	type: 'message',
 	process: async (i, o) => {
-		search(o.args.join(' '), o.mod.bot)
+		search(o.args.join(' '), o.mod)
 			.then(({ list, page }) => {
 				if (list.length === 0) {
 					return i.reply('Nothing but dust');
@@ -29,13 +29,13 @@ export const messageSearch: ModCommand = {
 				} else {
 					const item = list.shift();
 					if (item.id.includes('T')) {
-						displayItem(item as Item, i, o.mod.bot, page);
+						displayItem(item as Item, i, o.mod, page);
 					}
 					if (item.id.includes('E')) {
-						displayMonster(item as Monster, i, o.mod.bot);
+						displayMonster(item as Monster, i, o.mod);
 					}
 					if (item.id.includes('M')) {
-						displayMap(item as Map, i, o.mod.bot);
+						displayMap(item as Map, i, o.mod);
 					}
 				}
 			})

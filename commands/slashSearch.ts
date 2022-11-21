@@ -37,27 +37,26 @@ export const slashSearch: ModCommand = {
 		},
 	],
 	process: async (i, o) => {
-		search(
-			[
-				(o.args.find((z) => z.name === 'query') as Eris.InteractionDataOptionWithValue).value as string,
-				o.args.find((z) => z.name === 'page')
-					? `--page ${(o.args.find((z) => z.name === 'page') as Eris.InteractionDataOptionWithValue).value}`
-					: '',
-				o.args.find((z) => z.name === 'type')
-					? '--type "' +
-					  (o.args.find((z) => z.name === 'type') as Eris.InteractionDataOptionWithValue).value +
-					  '"'
-					: '',
-				o.args.find((z) => z.name === 'filter')
-					? '--filter "' +
-					  (o.args.find((z) => z.name === 'filter') as Eris.InteractionDataOptionWithValue).value +
-					  '"'
-					: '',
-			]
-				.join(' ')
-				.trim(),
-			o.mod.bot,
-		)
+		const searchQuery = [
+			(o.args.find((z) => z.name === 'query') as Eris.InteractionDataOptionWithValue).value as string,
+			o.args.find((z) => z.name === 'page')
+				? `--page ${(o.args.find((z) => z.name === 'page') as Eris.InteractionDataOptionWithValue).value}`
+				: '',
+			o.args.find((z) => z.name === 'type')
+				? '--type "' +
+				  (o.args.find((z) => z.name === 'type') as Eris.InteractionDataOptionWithValue).value +
+				  '"'
+				: '',
+			o.args.find((z) => z.name === 'filter')
+				? '--filter "' +
+				  (o.args.find((z) => z.name === 'filter') as Eris.InteractionDataOptionWithValue).value +
+				  '"'
+				: '',
+		]
+			.join(' ')
+			.trim();
+
+		search(searchQuery, o.mod)
 			.then(({ list, page }) => {
 				if (list.length === 0) {
 					return i.reply('Nothing but dust');
@@ -66,13 +65,13 @@ export const slashSearch: ModCommand = {
 				} else {
 					const item = list.shift();
 					if (item.id.includes('T')) {
-						displayItem(item as Item, i, o.mod.bot, page);
+						displayItem(item as Item, i, o.mod, page);
 					}
 					if (item.id.includes('E')) {
-						displayMonster(item as Monster, i, o.mod.bot);
+						displayMonster(item as Monster, i, o.mod);
 					}
 					if (item.id.includes('M')) {
-						displayMap(item as Map, i, o.mod.bot);
+						displayMap(item as Map, i, o.mod);
 					}
 				}
 			})

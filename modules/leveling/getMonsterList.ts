@@ -11,7 +11,7 @@ export async function getMonsterList(
 	return new Promise(async (resolve) => {
 		// variables
 		const results: { monster: Monster; expWithBonus: number; expWithoutBonus: number }[] = [];
-		const monsterList = (await search('* -t boss;mini;monster', mod.bot)).list;
+		const monsterList = (await search('* -t boss;mini;monster', mod)).list;
 
 		// loop
 		for (let index = monsterList.length; --index >= 0; ) {

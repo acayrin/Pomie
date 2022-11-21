@@ -9,7 +9,7 @@ import { search as Search } from '../query';
 export async function displayItem(
 	item: Item,
 	interaction: Eris.Message | Eris.CommandInteraction,
-	bot: Yujin.Bot,
+	mod: Yujin.Mod,
 	page = 1,
 ) {
 	const embed = new Eris.Embed().setColor(process.env.YUJIN_COLOR);
@@ -45,7 +45,7 @@ export async function displayItem(
 				_baseDef = itemStat.match(/\d+/g).shift();
 			} else if (itemStat.includes('Upgrade for')) {
 				_upFor = Utils.filter(
-					(await Search(`${itemStat.replace('Upgrade for', '').trim()} --type crysta`, bot)).list,
+					(await Search(`${itemStat.replace('Upgrade for', '').trim()} --type crysta`, mod)).list,
 					(i) => i.id !== item.id,
 				).shift();
 			} else {
@@ -61,7 +61,7 @@ export async function displayItem(
 		const details = [];
 
 		for (const use of item.uses) {
-			const crystaItem = (await Search(use.for, bot)).list.shift();
+			const crystaItem = (await Search(use.for, mod)).list.shift();
 			if (crystaItem.type.includes('Crysta')) {
 				_upTo = crystaItem;
 				item.uses.splice(item.uses.indexOf(use), 1);
@@ -69,7 +69,7 @@ export async function displayItem(
 		}
 		if (item.uses.length > 0) {
 			for (const use of item.uses) {
-				const synthableItem = (await Search(use.for, bot)).list.shift();
+				const synthableItem = (await Search(use.for, mod)).list.shift();
 				details.push(
 					`[${synthableItem.id}] **${synthableItem.name}** (${synthableItem.type}) (x ${use.amount})`,
 				);
@@ -108,7 +108,7 @@ export async function displayItem(
 			) {
 				details.push(`+ **${material.item}** (x ${material.amount})`);
 			} else {
-				const materialLookup = (await Search(material.item, bot)).list.shift();
+				const materialLookup = (await Search(material.item, mod)).list.shift();
 				details.push(
 					`+ [${materialLookup.id}] **${materialLookup.name}** (${materialLookup.type}) (x ${material.amount})`,
 				);
@@ -136,7 +136,7 @@ export async function displayItem(
 				page * maxEntriesPerView > item.drops.length ? item.drops.length : page * maxEntriesPerView;
 			const entryStart = (page - 1) * maxEntriesPerView;
 			for (let i = entryStart; i < entryLimit; i++) {
-				const from = (await Search(item.drops[i].from, bot)).list.shift();
+				const from = (await Search(item.drops[i].from, mod)).list.shift();
 				const line: string[] = [];
 				const lineColorEmotes: string[] = [];
 				const lineColorCode: string[] = [];
@@ -144,7 +144,7 @@ export async function displayItem(
 				if (item.drops[i].dyes)
 					for (const dye of item.drops[i].dyes) {
 						const code = Color(dye);
-						lineColorEmotes.push(Emote(`:${code}:`, bot.client));
+						lineColorEmotes.push(Emote(`:${code}:`, mod.bot.client));
 						lineColorCode.push(code.replace(/_/g, ''));
 					}
 				if (from) {

@@ -131,7 +131,7 @@ export function getLevelGuide(args: string, mod: Yujin.Mod): Promise<GuideResult
 				case '-e':
 				case '--exp':
 					const value = partials[partials.indexOf(partial) + 1];
-					if (value && !isNaN(Number(value))) {
+					if (value && !Number.isNaN(value)) {
 						guideBonus = Number(value);
 					}
 					break;
