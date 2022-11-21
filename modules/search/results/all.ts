@@ -1,15 +1,15 @@
 import Eris from 'eris';
-import { inPlaceSort } from 'fast-sort';
+import { sort } from 'fast-sort';
 import { Item } from '../../../types/item';
 import { Map } from '../../../types/map';
 import { Monster } from '../../../types/monster';
 
 export function displayAll(
 	interaction: Eris.Message | Eris.CommandInteraction,
-	dataList: (Item | Monster | Map)[],
+	inputDataList: (Item | Monster | Map)[],
 	displayPage: number,
 ) {
-	dataList = inPlaceSort(dataList).by([
+	const dataList = sort(inputDataList).by([
 		{ asc: (entry) => entry.id.length },
 		{ asc: (entry) => entry.id.match(/\d+/g).shift() },
 	]);

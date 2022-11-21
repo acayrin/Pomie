@@ -53,9 +53,8 @@ export default class extends Yujin.Mod {
 
 						// load index
 						if (!mod.bot.database.has('pomie_index'))
-							mod.bot.database.set('pomie_index', this, pomieIndex, {
-								public: true,
-							});
+							// prevent changing index from some unknown source
+							mod.bot.database.set('pomie_index', this, Object.freeze(pomieIndex));
 						mod.bot.info(`[Pomie] Loaded ${pomieIndex.length} entries`);
 					}
 

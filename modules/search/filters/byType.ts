@@ -10,9 +10,7 @@ export function filter(typeQuery: string, entryList: (Item | Monster | Map)[]) {
 
 		if (/\d|[a-z]/i.test(type)) {
 			let index = entryList.length;
-			while (index > 0) {
-				index--;
-
+			while (--index > 0) {
 				if (
 					type.startsWith('=') && // absolute match
 					entryList.at(index).type.toLowerCase() === type.replace(/=/g, '').toLowerCase() // matching type

@@ -1,16 +1,18 @@
-import vm from 'vm';
 import { Item } from '../../../types/item';
 import { Map } from '../../../types/map';
 import { Monster } from '../../../types/monster';
+import * as Utils from '../../../utils';
 
 export function filter(filters: string[], dataList: (Item | Monster | Map)[]) {
+	let results: (Item | Monster | Map)[] = [];
+
 	for (const filter of filters)
 		try {
 			const filterValue = filter.match(/\d+/g).pop();
 			const filterComparator = filter.match(/((<|>)=)|<|>|=/g).shift();
 			const filterAttribute = filter.replace(filterComparator, '').replace(filterValue, '').trim().toLowerCase();
 
-			dataList = dataList.filter((entry) => {
+			results = Utils.filter(dataList, (entry) => {
 				// process as Item
 				if ((entry as Item).sell !== undefined) {
 					entry = entry as Item;
@@ -59,11 +61,11 @@ export function filter(filters: string[], dataList: (Item | Monster | Map)[]) {
 			});
 		} catch (_) {}
 
-	return dataList;
+	return results;
 }
 
 function compare(atrribute: string, comparator: string, value: string): boolean {
-	return safeEval(`${atrribute} ${comparator} ${value}`);
+	return eval(`;(function() { return ${atrribute} ${comparator} ${value} })()`);
 }
 
 function getType(type: string): string {
@@ -72,7 +74,7 @@ function getType(type: string): string {
 
 	return undefined;
 }
-
+/*
 function safeEval(code: string) {
 	const sandbox: { [key: string]: any } = {};
 	const resultKey = `SAFE_EVAL_${Math.floor(Math.random() * 1000000)}`;
@@ -91,4 +93,4 @@ function safeEval(code: string) {
 	code = `${clearContext + resultKey}=${code}`;
 	vm.runInNewContext(code, sandbox);
 	return sandbox[resultKey];
-}
+}*/

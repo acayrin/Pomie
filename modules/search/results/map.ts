@@ -9,9 +9,9 @@ export async function displayMap(item: Map, interaction: Eris.Message | Eris.Com
 		const monsterLookup = (await Search(`${monster} -t monster;miniboss;boss`, mod)).list.shift();
 
 		if (monsterLookup) {
-			monstersFieldValue.push(`> [${monsterLookup.id}] **${monsterLookup.name}** (${monsterLookup.type})`);
+			monstersFieldValue.push(`[${monsterLookup.id}] **${monsterLookup.name}** (${monsterLookup.type})`);
 		} else {
-			monstersFieldValue.push(`> **${monster}**`);
+			monstersFieldValue.push(`**${monster}**`);
 		}
 	}
 
