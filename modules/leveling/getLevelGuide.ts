@@ -286,19 +286,27 @@ export function getLevelGuide(args: string, mod: Yujin.Mod): Promise<GuideResult
 				}
 				// boss - normal
 				if (guideFilter === 3) {
-					levelModel.boss = Utils.filter(levelModel.boss, (entry) => entry.type.includes('Normal'));
+					levelModel.boss = Array.isArray(levelModel.boss)
+						? Utils.filter(levelModel.boss, (entry) => entry.type.includes('Normal'))
+						: [];
 				}
 				// boss - hard
 				if (guideFilter === 4) {
-					levelModel.boss = Utils.filter(levelModel.boss, (entry) => entry.type.includes('Hard'));
+					levelModel.boss = Array.isArray(levelModel.boss)
+						? Utils.filter(levelModel.boss, (entry) => entry.type.includes('Hard'))
+						: [];
 				}
 				// boss - nightmare
 				if (guideFilter === 5) {
-					levelModel.boss = Utils.filter(levelModel.boss, (entry) => entry.type.includes('Nightmare'));
+					levelModel.boss = Array.isArray(levelModel.boss)
+						? Utils.filter(levelModel.boss, (entry) => entry.type.includes('Nightmare'))
+						: [];
 				}
 				// boss - ultimate
 				if (guideFilter === 6) {
-					levelModel.boss = Utils.filter(levelModel.boss, (entry) => entry.type.includes('Ultimate'));
+					levelModel.boss = Array.isArray(levelModel.boss)
+						? Utils.filter(levelModel.boss, (entry) => entry.type.includes('Ultimate'))
+						: [];
 				}
 			}
 
