@@ -26,7 +26,7 @@ export default class extends Yujin.Mod {
 				onInit: async (mod) => {
 					// config
 					if (!this.getConfig())
-						this.generateDefaultConfig({
+						this.generateConfig({
 							firebase_url: '<your firebase database url>',
 							level_cap: 255,
 							ignored_leveling: {
