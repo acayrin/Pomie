@@ -67,8 +67,7 @@ export function search(inputString: string, mod: Yujin.Mod): Promise<{ page: num
 			let index = dataList.length;
 			while (--index > 0) {
 				if (dataList.at(index).id.toLowerCase() === searchQuery.match(regexParseID).shift().toLowerCase()) {
-					dataList = [dataList.at(index)];
-					break;
+					resolve({ page: searchPage, list: [dataList.at(index)] });
 				}
 			}
 		}
