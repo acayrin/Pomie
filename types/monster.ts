@@ -1,4 +1,4 @@
-export type Monster = {
+export type ToramMonster = {
 	id: string;
 	name: string;
 	level: number;

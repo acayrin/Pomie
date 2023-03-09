@@ -1,4 +1,4 @@
-export type Map = {
+export type ToramMap = {
 	id: string;
 	name: string;
 	type: 'Map';

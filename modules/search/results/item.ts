@@ -1,13 +1,13 @@
 import Eris from 'eris';
 import Yujin from '../../../../../core/yujin';
-import { Item } from '../../../types/item';
+import { ToramItem } from '../../../types/item';
 import * as Utils from '../../../utils';
 import { bestColor as Color } from '../../others/findColor';
 import { findEmote as Emote } from '../../others/findEmote';
 import { search as Search } from '../query';
 
 export async function displayItem(
-	item: Item,
+	item: ToramItem,
 	interaction: Eris.Message | Eris.CommandInteraction,
 	mod: Yujin.Mod,
 	page = 1,
@@ -95,7 +95,7 @@ export async function displayItem(
 		details.push(`Set ${item.recipe.set}`);
 		details.push(`Level ${item.recipe.level}`);
 		details.push(`Difficulty ${item.recipe.difficulty}`);
-		details.push(`Materials:`);
+		details.push("Materials:");
 
 		for (const material of item.recipe.materials) {
 			if (
@@ -130,7 +130,7 @@ export async function displayItem(
 				: '';
 
 		if (item.drops.length > maxEntriesPerView && page * maxEntriesPerView - item.drops.length > maxEntriesPerView) {
-			details.push(`You went a bit too far`);
+			details.push("You went a bit too far");
 		} else {
 			const entryLimit =
 				page * maxEntriesPerView > item.drops.length ? item.drops.length : page * maxEntriesPerView;
@@ -159,8 +159,8 @@ export async function displayItem(
 			}
 		}
 		if (item.drops.length > maxEntriesPerView) {
-			details.push(``);
-			details.push(`**Note** `);
+			details.push("");
+			details.push("**Note** ");
 			details.push(
 				`There are more than ${maxEntriesPerView} drops available, use \`\` -s ${item.id} -p [page] \`\` to navigate through the rest`,
 			);

@@ -7,5 +7,5 @@ export function findEmote(name: string, client: Eris.Client) {
 	const cache = inPlaceSort(client.getEmojis()).asc((e: Eris.GuildEmoji) => e.name);
 	const emoji = emote ? cache.find((e) => e.name === emote.replace(/:/g, '')) : undefined;
 
-	return emoji ? `<${emoji.getIdentifier()}>` : `:x:`;
+	return emoji ? `<${emoji.getIdentifier()}>` : ":x:";
 }

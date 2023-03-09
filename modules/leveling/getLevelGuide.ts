@@ -1,8 +1,8 @@
-import Yujin from '../../../../core/yujin';
-import * as Utils from '../../utils';
-import { calculateExpBonus } from './calculateBonusExp';
-import { calculateExpAmount } from './calculateExpAmount';
-import { getMonsterList } from './getMonsterList';
+import Yujin from "../../../../core/yujin";
+import * as Utils from "../../utils";
+import { calculateExpBonus } from "./calculateBonusExp";
+import { calculateExpAmount } from "./calculateExpAmount";
+import { getMonsterList } from "./getMonsterList";
 
 type GuideResult = {
 	type: 2;
@@ -77,7 +77,7 @@ type GuideLevelModel = {
 };
 export type GuideResults = GuideResult | GuideResultError;
 
-const pomieLevelModels: { [key: number]: GuideLevelModel } = {} as any;
+const pomieLevelModels: { [key: number]: GuideLevelModel } = {};
 
 /**
  * generates a leveling guide based on given arguments
@@ -98,13 +98,17 @@ const pomieLevelModels: { [key: number]: GuideLevelModel } = {} as any;
  * @param {String} args arguments
  * @returns Object containing leveling guide
  */
-export function getLevelGuide(args: string, mod: Yujin.Mod): Promise<GuideResults> {
+export function getLevelGuide(
+	args: string,
+	mod: Yujin.Mod,
+): Promise<GuideResults> {
+	// rome-ignore lint/suspicious/noAsyncPromiseExecutor: <explanation>
 	return new Promise(async (resolve, reject) => {
 		// missing arguments
 		if (!args) {
 			reject({
 				type: 3,
-				err: 'Missing arguments',
+				err: "Missing arguments",
 			});
 		}
 
@@ -114,8 +118,9 @@ export function getLevelGuide(args: string, mod: Yujin.Mod): Promise<GuideResult
 		let guidePrivate = false;
 
 		// prevent negative values
-		let startLevel = Math.abs(Number(args.split(' ')[0]));
-		let endLevel = Math.abs(Number(args.split(' ')[1]));
+		const secondArg = args.split(" ")[1];
+		let startLevel = Math.abs(Number(args.split(" ")[0]));
+		let endLevel = secondArg ? Math.abs(Number(secondArg)) : startLevel + 1;
 
 		// reverse if numbers are opposite
 		if (endLevel && endLevel < startLevel) {
@@ -125,45 +130,45 @@ export function getLevelGuide(args: string, mod: Yujin.Mod): Promise<GuideResult
 		}
 
 		// filter through arguments
-		const partials = args.split(' ');
+		const partials = args.split(" ");
 		for (const partial of partials) {
 			switch (partial) {
-				case '-e':
-				case '--exp':
+				case "-e":
+				case "--exp":
 					const value = partials[partials.indexOf(partial) + 1];
 					if (value && !Number.isNaN(value)) {
 						guideBonus = Number(value);
 					}
 					break;
-				case '-b':
-				case '--boss':
+				case "-b":
+				case "--boss":
 					guideFilter = 1;
 					break;
-				case '-m':
-				case '--mini':
+				case "-m":
+				case "--mini":
 					guideFilter = 2;
 					break;
-				case '-n':
-				case '--normal':
+				case "-n":
+				case "--normal":
 					guideFilter = 3;
 					break;
-				case '-h':
-				case '--hard':
+				case "-h":
+				case "--hard":
 					guideFilter = 4;
 					break;
-				case '-nm':
-				case '--nightmare':
+				case "-nm":
+				case "--nightmare":
 					guideFilter = 5;
 					break;
-				case '-u':
-				case '--ultimate':
+				case "-u":
+				case "--ultimate":
 					guideFilter = 6;
 					break;
-				case '-M':
-				case '--mob':
+				case "-M":
+				case "--mob":
 					guideFilter = 7;
 					break;
-				case '-pm':
+				case "-pm":
 					guidePrivate = true;
 					break;
 				default:
@@ -190,8 +195,12 @@ export function getLevelGuide(args: string, mod: Yujin.Mod): Promise<GuideResult
 		} = {};
 
 		// loop through all the levels
-		for (let currentLevel = startLevel; currentLevel <= endLevel; currentLevel++) {
-			let levelModel: GuideLevelModel = {} as any;
+		for (
+			let currentLevel = startLevel;
+			currentLevel <= endLevel;
+			currentLevel++
+		) {
+			let levelModel = {} as GuideLevelModel;
 
 			// if level model exists and exp bonus is unchanged
 			if (!guideBonus && pomieLevelModels[currentLevel]) {
@@ -199,19 +208,24 @@ export function getLevelGuide(args: string, mod: Yujin.Mod): Promise<GuideResult
 			} else {
 				// get current level exp bonus
 				const currentLevelBonus =
-					(guideBonus || 0) + calculateExpBonus(currentLevel, mod, guideBonus === undefined);
+					(guideBonus || 0) +
+					calculateExpBonus(currentLevel, mod, guideBonus === undefined);
 				// get current level mob list
-				const currentLevelList = await getMonsterList(currentLevel, currentLevelBonus, mod);
+				const currentLevelList = await getMonsterList(
+					currentLevel,
+					currentLevelBonus,
+					mod,
+				);
 
 				// get current level mob entries
 				const currentLevelBoss = Utils.filter(currentLevelList, (entry) =>
-					entry.monster.type.startsWith('Boss -'),
+					entry.monster.type.startsWith("Boss -"),
 				);
 				const currentLevelMini = Utils.filter(currentLevelList, (entry) =>
-					entry.monster.type.startsWith('Mini'),
+					entry.monster.type.startsWith("Mini"),
 				);
 				const currentLevelNorm = Utils.filter(currentLevelList, (entry) =>
-					entry.monster.type.startsWith('Monster'),
+					entry.monster.type.startsWith("Monster"),
 				);
 
 				// construct level model
@@ -226,8 +240,12 @@ export function getLevelGuide(args: string, mod: Yujin.Mod): Promise<GuideResult
 										level: entry.monster.level,
 										exp: entry.expWithBonus,
 										type: entry.monster.type,
-										count: Math.round(calculateExpAmount(currentLevel) / entry.expWithBonus),
-										countWb: Math.round(calculateExpAmount(currentLevel) / entry.expWithoutBonus),
+										count: Math.round(
+											calculateExpAmount(currentLevel) / entry.expWithBonus,
+										),
+										countWb: Math.round(
+											calculateExpAmount(currentLevel) / entry.expWithoutBonus,
+										),
 									};
 							  })
 							: undefined,
@@ -241,8 +259,12 @@ export function getLevelGuide(args: string, mod: Yujin.Mod): Promise<GuideResult
 										level: entry.monster.level,
 										exp: entry.expWithBonus,
 										type: entry.monster.type,
-										count: Math.round(calculateExpAmount(currentLevel) / entry.expWithBonus),
-										countWb: Math.round(calculateExpAmount(currentLevel) / entry.expWithoutBonus),
+										count: Math.round(
+											calculateExpAmount(currentLevel) / entry.expWithBonus,
+										),
+										countWb: Math.round(
+											calculateExpAmount(currentLevel) / entry.expWithoutBonus,
+										),
 									};
 							  })
 							: undefined,
@@ -256,8 +278,12 @@ export function getLevelGuide(args: string, mod: Yujin.Mod): Promise<GuideResult
 										level: entry.monster.level,
 										exp: entry.expWithBonus,
 										type: entry.monster.type,
-										count: Math.round(calculateExpAmount(currentLevel) / entry.expWithBonus),
-										countWb: Math.round(calculateExpAmount(currentLevel) / entry.expWithoutBonus),
+										count: Math.round(
+											calculateExpAmount(currentLevel) / entry.expWithBonus,
+										),
+										countWb: Math.round(
+											calculateExpAmount(currentLevel) / entry.expWithoutBonus,
+										),
 									};
 							  })
 							: undefined,
@@ -287,25 +313,33 @@ export function getLevelGuide(args: string, mod: Yujin.Mod): Promise<GuideResult
 				// boss - normal
 				if (guideFilter === 3) {
 					levelModel.boss = Array.isArray(levelModel.boss)
-						? Utils.filter(levelModel.boss, (entry) => entry.type.includes('Normal'))
+						? Utils.filter(levelModel.boss, (entry) =>
+								entry.type.includes("Normal"),
+						  )
 						: [];
 				}
 				// boss - hard
 				if (guideFilter === 4) {
 					levelModel.boss = Array.isArray(levelModel.boss)
-						? Utils.filter(levelModel.boss, (entry) => entry.type.includes('Hard'))
+						? Utils.filter(levelModel.boss, (entry) =>
+								entry.type.includes("Hard"),
+						  )
 						: [];
 				}
 				// boss - nightmare
 				if (guideFilter === 5) {
 					levelModel.boss = Array.isArray(levelModel.boss)
-						? Utils.filter(levelModel.boss, (entry) => entry.type.includes('Nightmare'))
+						? Utils.filter(levelModel.boss, (entry) =>
+								entry.type.includes("Nightmare"),
+						  )
 						: [];
 				}
 				// boss - ultimate
 				if (guideFilter === 6) {
 					levelModel.boss = Array.isArray(levelModel.boss)
-						? Utils.filter(levelModel.boss, (entry) => entry.type.includes('Ultimate'))
+						? Utils.filter(levelModel.boss, (entry) =>
+								entry.type.includes("Ultimate"),
+						  )
 						: [];
 				}
 			}
@@ -349,7 +383,12 @@ export function getLevelGuide(args: string, mod: Yujin.Mod): Promise<GuideResult
 				levelData: levelMap[guideData.levels.at(index)],
 				// level exp bonus
 				levelExpBonus:
-					(guideBonus || 0) + calculateExpBonus(guideData.levels.at(index), mod, guideBonus === undefined),
+					(guideBonus || 0) +
+					calculateExpBonus(
+						guideData.levels.at(index),
+						mod,
+						guideBonus === undefined,
+					),
 			};
 
 			// next level data
@@ -361,7 +400,11 @@ export function getLevelGuide(args: string, mod: Yujin.Mod): Promise<GuideResult
 				// level exp bonus
 				levelExpBonus:
 					(guideBonus || 0) +
-					calculateExpBonus(guideData.levels.at(index + 1), mod, guideBonus === undefined),
+					calculateExpBonus(
+						guideData.levels.at(index + 1),
+						mod,
+						guideBonus === undefined,
+					),
 			};
 
 			// if next level data doesn't exist, ignore
@@ -416,13 +459,17 @@ export function getLevelGuide(args: string, mod: Yujin.Mod): Promise<GuideResult
 			const validate = {
 				// if 2 levels have any different monster entry
 				differentMonster:
-					currentLevel.levelData.boss?.at(0)?.id !== nextLevel.levelData.boss?.at(0)?.id ||
-					currentLevel.levelData.mini?.at(0)?.id !== nextLevel.levelData.mini?.at(0)?.id ||
-					currentLevel.levelData.norm?.at(0)?.id !== nextLevel.levelData.norm?.at(0)?.id,
+					currentLevel.levelData.boss?.at(0)?.id !==
+						nextLevel.levelData.boss?.at(0)?.id ||
+					currentLevel.levelData.mini?.at(0)?.id !==
+						nextLevel.levelData.mini?.at(0)?.id ||
+					currentLevel.levelData.norm?.at(0)?.id !==
+						nextLevel.levelData.norm?.at(0)?.id,
 
 				// if 2 levels have different exp bonus
 				differentExpBonus:
-					calculateExpBonus(currentLevel.levelNum, mod) !== calculateExpBonus(nextLevel.levelNum, mod),
+					calculateExpBonus(currentLevel.levelNum, mod) !==
+					calculateExpBonus(nextLevel.levelNum, mod),
 
 				// if 2 different level state
 				differentLevel: currentLevel.levelNum !== guideData.fixedLevel,
@@ -439,7 +486,12 @@ export function getLevelGuide(args: string, mod: Yujin.Mod): Promise<GuideResult
 				// add new result entry when 2 levels are different or at last level
 				guideResult.list.push({
 					bonusExp:
-						(guideBonus || 0) + calculateExpBonus(currentLevel.levelNum, mod, guideBonus === undefined),
+						(guideBonus || 0) +
+						calculateExpBonus(
+							currentLevel.levelNum,
+							mod,
+							guideBonus === undefined,
+						),
 					startLevel: guideData.fixedLevel,
 					endLevel: currentLevel.levelNum,
 					boss: currentLevel.levelData.boss

@@ -1,9 +1,9 @@
-import { Item } from '../../../types/item';
-import { Map } from '../../../types/map';
-import { Monster } from '../../../types/monster';
+import { ToramItem } from '../../../types/item';
+import { ToramMap } from '../../../types/map';
+import { ToramMonster } from '../../../types/monster';
 
-export function filter(typeQuery: string, entryList: (Item | Monster | Map)[]) {
-	const matchingEntryList: (Item | Monster | Map)[] = [];
+export function filter(typeQuery: string, entryList: (ToramItem | ToramMonster | ToramMap)[]) {
+	const matchingEntryList: (ToramItem | ToramMonster | ToramMap)[] = [];
 
 	typeQuery.split(';').forEach((type) => {
 		type = type.trim(); // clean up trailing spaces

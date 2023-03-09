@@ -1,12 +1,12 @@
 import Eris from 'eris';
 import { sort } from 'fast-sort';
-import { Item } from '../../../types/item';
-import { Map } from '../../../types/map';
-import { Monster } from '../../../types/monster';
+import { ToramItem } from '../../../types/item';
+import { ToramMap } from '../../../types/map';
+import { ToramMonster } from '../../../types/monster';
 
 export function displayAll(
 	interaction: Eris.Message | Eris.CommandInteraction,
-	inputDataList: (Item | Monster | Map)[],
+	inputDataList: (ToramItem | ToramMonster | ToramMap)[],
 	displayPage: number,
 ) {
 	const dataList = sort(inputDataList).by([
@@ -30,7 +30,7 @@ export function displayAll(
 		.setTimestamp()
 		.setFooter('Source: Coryn.club');
 
-	const shownEntryTypes = new Map<string, (Item | Monster | Map)[]>();
+	const shownEntryTypes = new Map<string, (ToramItem | ToramMonster | ToramMap)[]>();
 
 	for (let i = (displayPage - 1) * 20; i < displayPage * 20; i++) {
 		const entry = dataList[i];

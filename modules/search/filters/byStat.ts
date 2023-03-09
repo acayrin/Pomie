@@ -1,10 +1,10 @@
-import { Item } from '../../../types/item';
-import { Map } from '../../../types/map';
-import { Monster } from '../../../types/monster';
+import { ToramItem } from '../../../types/item';
+import { ToramMap } from '../../../types/map';
+import { ToramMonster } from '../../../types/monster';
 import * as Utils from '../../../utils';
 
-export function filter(filters: string[], dataList: (Item | Monster | Map)[]) {
-	let results: (Item | Monster | Map)[] = [];
+export function filter(filters: string[], dataList: (ToramItem | ToramMonster | ToramMap)[]) {
+	let results: (ToramItem | ToramMonster | ToramMap)[] = [];
 
 	for (const filter of filters)
 		try {
@@ -14,8 +14,8 @@ export function filter(filters: string[], dataList: (Item | Monster | Map)[]) {
 
 			results = Utils.filter(dataList, (entry) => {
 				// process as Item
-				if ((entry as Item).sell !== undefined) {
-					entry = entry as Item;
+				if ((entry as ToramItem).sell !== undefined) {
+					entry = entry as ToramItem;
 
 					// compare by sell value
 					if (!Number.isNaN(entry.sell) && filterAttribute.includes('sell'))
@@ -43,7 +43,7 @@ export function filter(filters: string[], dataList: (Item | Monster | Map)[]) {
 						}
 				}
 				if (['boss', 'monster'].some((type) => entry.type.toLowerCase().includes(type))) {
-					entry = entry as Monster;
+					entry = entry as ToramMonster;
 
 					// filter by HP
 					if (filterAttribute.includes('hp') && !Number.isNaN(entry.hp))

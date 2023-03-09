@@ -4,9 +4,9 @@ import { displayAll } from '../modules/search/results/all';
 import { displayItem } from '../modules/search/results/item';
 import { displayMap } from '../modules/search/results/map';
 import { displayMonster } from '../modules/search/results/monster';
-import { Item } from '../types/item';
-import { Map } from '../types/map';
-import { Monster } from '../types/monster';
+import { ToramItem } from '../types/item';
+import { ToramMap } from '../types/map';
+import { ToramMonster } from '../types/monster';
 
 export const messageSearch: ModCommand = {
 	name: 'search',
@@ -29,13 +29,13 @@ export const messageSearch: ModCommand = {
 				} else {
 					const item = list.shift();
 					if (item.id.includes('T')) {
-						displayItem(item as Item, i, o.mod, page);
+						displayItem(item as ToramItem, i, o.mod, page);
 					}
 					if (item.id.includes('E')) {
-						displayMonster(item as Monster, i, o.mod);
+						displayMonster(item as ToramMonster, i, o.mod);
 					}
 					if (item.id.includes('M')) {
-						displayMap(item as Map, i, o.mod);
+						displayMap(item as ToramMap, i, o.mod);
 					}
 				}
 			})

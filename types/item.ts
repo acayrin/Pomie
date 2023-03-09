@@ -1,4 +1,4 @@
-export type Item = {
+export type ToramItem = {
 	id: string; // item id
 	name: string; // item name
 	type: string; // item type
@@ -19,6 +19,9 @@ export type Item = {
 		set: number; // recipe set
 		level: number; // recipe level
 		difficulty: number; // recipe difficulty
-		materials: any[]; // recipe materials
+		materials: {
+			amount: number; // material amount
+			item: string; // material item id
+		}[]; // recipe materials
 	};
 };

@@ -1,12 +1,12 @@
 import Eris from 'eris';
 import Yujin from '../../../../../core/yujin';
-import { Monster } from '../../../types/monster';
+import { ToramMonster } from '../../../types/monster';
 import { bestColor as Color } from '../../others/findColor';
 import { findEmote as Emote } from '../../others/findEmote';
 import { search as Search } from '../query';
 
 export async function displayMonster(
-	item: Monster,
+	item: ToramMonster,
 	interaction: Eris.Message | Eris.CommandInteraction,
 	mod: Yujin.Mod,
 ) {

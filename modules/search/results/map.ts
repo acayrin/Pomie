@@ -1,9 +1,9 @@
 import Eris from 'eris';
 import Yujin from '../../../../../core/yujin';
-import { Map } from '../../../types/map';
+import { ToramMap } from '../../../types/map';
 import { search as Search } from '../query';
 
-export async function displayMap(item: Map, interaction: Eris.Message | Eris.CommandInteraction, mod: Yujin.Mod) {
+export async function displayMap(item: ToramMap, interaction: Eris.Message | Eris.CommandInteraction, mod: Yujin.Mod) {
 	const monstersFieldValue: string[] = [];
 	for (const monster of item.monsters) {
 		const monsterLookup = (await Search(`${monster} -t monster;miniboss;boss`, mod)).list.shift();
