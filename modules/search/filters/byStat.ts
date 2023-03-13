@@ -1,16 +1,23 @@
-import { ToramItem } from '../../../types/item';
-import { ToramMap } from '../../../types/map';
-import { ToramMonster } from '../../../types/monster';
-import * as Utils from '../../../utils';
+import { ToramItem } from "../../../types/item";
+import { ToramMap } from "../../../types/map";
+import { ToramMonster } from "../../../types/monster";
+import * as Utils from "../../../utils";
 
-export function filter(filters: string[], dataList: (ToramItem | ToramMonster | ToramMap)[]) {
+export function filter(
+	filters: string[],
+	dataList: (ToramItem | ToramMonster | ToramMap)[],
+) {
 	let results: (ToramItem | ToramMonster | ToramMap)[] = [];
 
 	for (const filter of filters)
 		try {
 			const filterValue = filter.match(/\d+/g).pop();
 			const filterComparator = filter.match(/((<|>)=)|<|>|=/g).shift();
-			const filterAttribute = filter.replace(filterComparator, '').replace(filterValue, '').trim().toLowerCase();
+			const filterAttribute = filter
+				.replace(filterComparator, "")
+				.replace(filterValue, "")
+				.trim()
+				.toLowerCase();
 
 			results = Utils.filter(dataList, (entry) => {
 				// process as Item
@@ -18,17 +25,26 @@ export function filter(filters: string[], dataList: (ToramItem | ToramMonster | 
 					entry = entry as ToramItem;
 
 					// compare by sell value
-					if (!Number.isNaN(entry.sell) && filterAttribute.includes('sell'))
-						return compare(entry.sell.toString(), filterComparator, filterValue);
+					if (!Number.isNaN(entry.sell) && filterAttribute.includes("sell"))
+						return compare(
+							entry.sell.toString(),
+							filterComparator,
+							filterValue,
+						);
 
 					// compare by proc value
 					if (
-						filterAttribute.includes('proc') &&
+						filterAttribute.includes("proc") &&
 						/\d+/.test(entry.proc.toString()) &&
-						(getType(filterAttribute) === getType(entry.proc.toString().toLowerCase()) ||
+						(getType(filterAttribute) ===
+							getType(entry.proc.toString().toLowerCase()) ||
 							!getType(filterAttribute))
 					)
-						return compare(entry.proc.toString().match(/\d+/)[0], filterComparator, filterValue);
+						return compare(
+							entry.proc.toString().match(/\d+/)[0],
+							filterComparator,
+							filterValue,
+						);
 
 					// compare by stats
 					if (entry.stats && entry.stats.length > 0)
@@ -36,25 +52,33 @@ export function filter(filters: string[], dataList: (ToramItem | ToramMonster | 
 							if (!/\d+/g.test(entryStat)) continue;
 
 							const statValue = entryStat.match(/-?\d+/g).pop();
-							const statAttribute = entryStat.replace(statValue, '').toLowerCase().trim();
+							const statAttribute = entryStat
+								.replace(statValue, "")
+								.toLowerCase()
+								.trim();
 
 							if (statAttribute.includes(filterAttribute))
 								return compare(statValue, filterComparator, filterValue);
 						}
 				}
-				if (['boss', 'monster'].some((type) => entry.type.toLowerCase().includes(type))) {
+				if (
+					["boss", "monster"].some((type) =>
+						entry.type.toLowerCase().includes(type),
+					)
+				) {
 					entry = entry as ToramMonster;
 
 					// filter by HP
-					if (filterAttribute.includes('hp') && !Number.isNaN(entry.hp))
+					if (filterAttribute.includes("hp") && !Number.isNaN(entry.hp))
 						return compare(entry.hp.toString(), filterComparator, filterValue);
 
 					// filter by EXP
-					if (filterAttribute.includes('exp') && !Number.isNaN(entry.exp))
+					if (filterAttribute.includes("exp") && !Number.isNaN(entry.exp))
 						return compare(entry.exp.toString(), filterComparator, filterValue);
 
 					// filter by element
-					if (filterAttribute.includes('element')) return compare(entry.ele, filterComparator, filterValue);
+					if (filterAttribute.includes("element"))
+						return compare(entry.ele, filterComparator, filterValue);
 				}
 
 				return false;
@@ -64,12 +88,23 @@ export function filter(filters: string[], dataList: (ToramItem | ToramMonster | 
 	return results;
 }
 
-function compare(atrribute: string, comparator: string, value: string): boolean {
+function compare(
+	atrribute: string,
+	comparator: string,
+	value: string,
+): boolean {
 	return eval(`;(function() { return ${atrribute} ${comparator} ${value} })()`);
 }
 
 function getType(type: string): string {
-	for (const material of ['beast', 'metal', 'cloth', 'mana', 'wood', 'medicine'])
+	for (const material of [
+		"beast",
+		"metal",
+		"cloth",
+		"mana",
+		"wood",
+		"medicine",
+	])
 		if (type.includes(material)) return material;
 
 	return undefined;

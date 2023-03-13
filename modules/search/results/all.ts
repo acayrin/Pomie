@@ -1,8 +1,8 @@
-import Eris from 'eris';
-import { sort } from 'fast-sort';
-import { ToramItem } from '../../../types/item';
-import { ToramMap } from '../../../types/map';
-import { ToramMonster } from '../../../types/monster';
+import Eris from "eris";
+import { sort } from "fast-sort";
+import { ToramItem } from "../../../types/item";
+import { ToramMap } from "../../../types/map";
+import { ToramMonster } from "../../../types/monster";
 
 export function displayAll(
 	interaction: Eris.Message | Eris.CommandInteraction,
@@ -15,12 +15,14 @@ export function displayAll(
 	]);
 
 	if ((displayPage - 1) * 20 > dataList.length) {
-		return interaction.reply('Page does not exist');
+		return interaction.reply("Page does not exist");
 	}
 
-	const _curView = displayPage * 20 > dataList.length ? dataList.length : displayPage * 20;
+	const _curView =
+		displayPage * 20 > dataList.length ? dataList.length : displayPage * 20;
 	const _curPage = (displayPage - 1) * 20 + 1;
-	const _maxPage = Math.ceil(dataList.length / 20) === 0 ? 1 : Math.ceil(dataList.length / 20);
+	const _maxPage =
+		Math.ceil(dataList.length / 20) === 0 ? 1 : Math.ceil(dataList.length / 20);
 
 	const embed = new Eris.Embed()
 		.setColor(process.env.YUJIN_COLOR)
@@ -28,9 +30,12 @@ export function displayAll(
 			`Results **${_curPage}** to **${_curView}** of **${dataList.length}** (page **${displayPage}** of **${_maxPage}**)`,
 		)
 		.setTimestamp()
-		.setFooter('Source: Coryn.club');
+		.setFooter("Source: Coryn.club");
 
-	const shownEntryTypes = new Map<string, (ToramItem | ToramMonster | ToramMap)[]>();
+	const shownEntryTypes = new Map<
+		string,
+		(ToramItem | ToramMonster | ToramMap)[]
+	>();
 
 	for (let i = (displayPage - 1) * 20; i < displayPage * 20; i++) {
 		const entry = dataList[i];
@@ -38,24 +43,28 @@ export function displayAll(
 		if (!entry) continue;
 		if (!shownEntryTypes.get(entry.type)) shownEntryTypes.set(entry.type, []);
 
-		shownEntryTypes.set(entry.type, shownEntryTypes.get(entry.type).concat(entry));
+		shownEntryTypes.set(
+			entry.type,
+			shownEntryTypes.get(entry.type).concat(entry),
+		);
 	}
 
 	for (const entryType of shownEntryTypes.keys()) {
 		const entryLines: string[] = [];
-		for (const entry of shownEntryTypes.get(entryType)) entryLines.push(`**[${entry.id}]** ${entry.name}`);
+		for (const entry of shownEntryTypes.get(entryType))
+			entryLines.push(`**[${entry.id}]** ${entry.name}`);
 
 		embed.addField(
 			`${
-				['Miniboss', 'Monster'].includes(entryType)
-					? '🐺'
-					: entryType.includes('Boss')
-					? '🐉'
-					: entryType === 'Map'
-					? '🗺️'
-					: '💰'
+				["Miniboss", "Monster"].includes(entryType)
+					? "🐺'"
+					: entryType.includes("Boss")
+					? "🐉'"
+					: entryType === "Map"
+					? "🗺️'"
+					: "💰'"
 			} ${entryType}`,
-			entryLines.join('\n'),
+			entryLines.join("\n"),
 		);
 	}
 

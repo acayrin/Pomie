@@ -1,6 +1,6 @@
 export type ToramMap = {
 	id: string;
 	name: string;
-	type: 'Map';
+	type: "Map";
 	monsters: string[];
 };

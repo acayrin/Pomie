@@ -1,4 +1,7 @@
-export function calculateExpAmount(startLevel: number, endLevel: number = startLevel + 1) {
+export function calculateExpAmount(
+	startLevel: number,
+	endLevel: number = startLevel + 1,
+) {
 	let totalExp = 0;
 
 	while (endLevel >= startLevel) {

@@ -22,7 +22,7 @@ export function search(
 		let searchType: string = undefined;
 		let searchPage = 1;
 		let searchFilters: string[] = [];
-		let searchQuery: string = "";
+		let searchQueryArray: string[] = [];
 
 		const searchPartials = inputString.match(regexParseArguments);
 		if (searchPartials) {
@@ -72,10 +72,13 @@ export function search(
 						break;
 					}
 					default:
-						searchQuery += partial;
+						searchQueryArray.push(partial);
 				}
 			}
 		}
+
+		// rebuild search query
+		const searchQuery = searchQueryArray.join(" ");
 
 		// check if query is an ID
 		if (regexParseID.test(searchQuery)) {

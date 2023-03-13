@@ -26,11 +26,11 @@ export function time_format(time: number): string {
 	const hrs = ~~(time / 3600);
 	const mins = ~~((time % 3600) / 60);
 	const secs = ~~time % 60;
-	let ret = '';
+	let ret = "";
 	if (hrs > 0) {
-		ret += `${hrs}:${mins < 10 ? '0' : ''}`;
+		ret += `${hrs}:${mins < 10 ? "0" : ""}`;
 	}
-	ret += `${mins}:${secs < 10 ? '0' : ''}`;
+	ret += `${mins}:${secs < 10 ? "0" : ""}`;
 	ret += `${secs}`;
 	return ret;
 }
@@ -58,8 +58,8 @@ export function rgb2hex(rgb: string): string {
 	return rgb
 		.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/)
 		.slice(1)
-		.map((n) => parseInt(n, 10).toString(16).padStart(2, '0'))
-		.join('');
+		.map((n) => parseInt(n, 10).toString(16).padStart(2, "0"))
+		.join("");
 }
 /**
  * compare 2 objects, return true if different, otherwise false

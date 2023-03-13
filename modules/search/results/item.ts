@@ -1,10 +1,10 @@
-import Eris from 'eris';
-import Yujin from '../../../../../core/yujin';
-import { ToramItem } from '../../../types/item';
-import * as Utils from '../../../utils';
-import { bestColor as Color } from '../../others/findColor';
-import { findEmote as Emote } from '../../others/findEmote';
-import { search as Search } from '../query';
+import Eris from "eris";
+import Yujin from "../../../../../core/yujin";
+import { ToramItem } from "../../../types/item";
+import * as Utils from "../../../utils";
+import { bestColor as Color } from "../../others/findColor";
+import { findEmote as Emote } from "../../others/findEmote";
+import { search as Search } from "../query";
 
 export async function displayItem(
 	item: ToramItem,
@@ -19,17 +19,17 @@ export async function displayItem(
 	let _baseDef: string = undefined;
 	let _baseStab: string = undefined;
 
-	if (item.proc === 'N/A' || item.proc === 'unknown') {
-		item.proc = 'Unknown';
+	if (item.proc === "N/A" || item.proc === "unknown") {
+		item.proc = "Unknown";
 	}
-	if (item.sell === '0') {
-		item.sell = 'Unknown';
+	if (item.sell === "0") {
+		item.sell = "Unknown";
 	}
 
 	// item base info
 	embed.addField(
 		`Type **${item.type}**  -  ID **${item.id}**`,
-		[`Sell for *${item.sell}*`, `Process to *${item.proc}*`].join('\n'),
+		[`Sell for *${item.sell}*`, `Process to *${item.proc}*`].join("\n"),
 	);
 
 	// item stats
@@ -37,15 +37,20 @@ export async function displayItem(
 		const details = [];
 
 		for (const itemStat of item.stats) {
-			if (itemStat.includes('Base Stability')) {
+			if (itemStat.includes("Base Stability")) {
 				_baseStab = itemStat.match(/\d+/g).shift();
-			} else if (itemStat.includes('Base ATK')) {
+			} else if (itemStat.includes("Base ATK")) {
 				_baseAtk = itemStat.match(/\d+/g).shift();
-			} else if (itemStat.includes('Base DEF')) {
+			} else if (itemStat.includes("Base DEF")) {
 				_baseDef = itemStat.match(/\d+/g).shift();
-			} else if (itemStat.includes('Upgrade for')) {
+			} else if (itemStat.includes("Upgrade for")) {
 				_upFor = Utils.filter(
-					(await Search(`${itemStat.replace('Upgrade for', '').trim()} --type crysta`, mod)).list,
+					(
+						await Search(
+							`${itemStat.replace("Upgrade for", "").trim()} --type crysta`,
+							mod,
+						)
+					).list,
 					(i) => i.id !== item.id,
 				).shift();
 			} else {
@@ -53,7 +58,8 @@ export async function displayItem(
 			}
 		}
 
-		if (details.join('\n').length > 0) embed.addField('Item stats', details.join('\n'));
+		if (details.join("\n").length > 0)
+			embed.addField("Item stats", details.join("\n"));
 	}
 
 	// item uses
@@ -62,7 +68,7 @@ export async function displayItem(
 
 		for (const use of item.uses) {
 			const crystaItem = (await Search(use.for, mod)).list.shift();
-			if (crystaItem.type.includes('Crysta')) {
+			if (crystaItem.type.includes("Crysta")) {
 				_upTo = crystaItem;
 				item.uses.splice(item.uses.indexOf(use), 1);
 			}
@@ -75,16 +81,22 @@ export async function displayItem(
 				);
 			}
 
-			embed.addField('Used for', details.join('\n'));
+			embed.addField("Used for", details.join("\n"));
 		}
 	}
 
 	// xtal stats
 	if (_upTo) {
-		embed.addField('Upgrade to', `[${_upTo.id}] **${_upTo.name}** (${_upTo.type})`);
+		embed.addField(
+			"Upgrade to",
+			`[${_upTo.id}] **${_upTo.name}** (${_upTo.type})`,
+		);
 	}
 	if (_upFor) {
-		embed.addField('Upgrade to', `[${_upFor.id}] **${_upFor.name}** (${_upFor.type})`);
+		embed.addField(
+			"Upgrade to",
+			`[${_upFor.id}] **${_upFor.name}** (${_upFor.type})`,
+		);
 	}
 
 	// item recipe
@@ -99,12 +111,12 @@ export async function displayItem(
 
 		for (const material of item.recipe.materials) {
 			if (
-				material.item.toLowerCase().includes('mana') ||
-				material.item.toLowerCase().includes('wood') ||
-				material.item.toLowerCase().includes('cloth') ||
-				material.item.toLowerCase().includes('metal') ||
-				material.item.toLowerCase().includes('beast') ||
-				material.item.toLowerCase().includes('medicine')
+				material.item.toLowerCase().includes("mana") ||
+				material.item.toLowerCase().includes("wood") ||
+				material.item.toLowerCase().includes("cloth") ||
+				material.item.toLowerCase().includes("metal") ||
+				material.item.toLowerCase().includes("beast") ||
+				material.item.toLowerCase().includes("medicine")
 			) {
 				details.push(`+ **${material.item}** (x ${material.amount})`);
 			} else {
@@ -115,7 +127,7 @@ export async function displayItem(
 			}
 		}
 
-		embed.addField('Crafting recpie', details.join('\n'));
+		embed.addField("Crafting recpie", details.join("\n"));
 	}
 
 	// item drops from
@@ -127,13 +139,18 @@ export async function displayItem(
 				? `(${item.drops.length} drops total - page ${page} of ${Math.round(
 						item.drops.length / maxEntriesPerView,
 				  )})`
-				: '';
+				: "";
 
-		if (item.drops.length > maxEntriesPerView && page * maxEntriesPerView - item.drops.length > maxEntriesPerView) {
+		if (
+			item.drops.length > maxEntriesPerView &&
+			page * maxEntriesPerView - item.drops.length > maxEntriesPerView
+		) {
 			details.push("You went a bit too far");
 		} else {
 			const entryLimit =
-				page * maxEntriesPerView > item.drops.length ? item.drops.length : page * maxEntriesPerView;
+				page * maxEntriesPerView > item.drops.length
+					? item.drops.length
+					: page * maxEntriesPerView;
 			const entryStart = (page - 1) * maxEntriesPerView;
 			for (let i = entryStart; i < entryLimit; i++) {
 				const from = (await Search(item.drops[i].from, mod)).list.shift();
@@ -145,7 +162,7 @@ export async function displayItem(
 					for (const dye of item.drops[i].dyes) {
 						const code = Color(dye);
 						lineColorEmotes.push(Emote(`:${code}:`, mod.bot.client));
-						lineColorCode.push(code.replace(/_/g, ''));
+						lineColorCode.push(code.replace(/_/g, ""));
 					}
 				if (from) {
 					line.push(`[${from.id}] **${from.name}** (${from.type})`);
@@ -153,9 +170,11 @@ export async function displayItem(
 					line.push(`[${item.drops[i].from}]`);
 				}
 				if (lineColorEmotes.length > 0) {
-					line.push(`(${lineColorEmotes.join('')} - ${lineColorCode.join(':')})`);
+					line.push(
+						`(${lineColorEmotes.join("")} - ${lineColorCode.join(":")})`,
+					);
 				}
-				details.push(line.join(' '));
+				details.push(line.join(" "));
 			}
 		}
 		if (item.drops.length > maxEntriesPerView) {
@@ -166,14 +185,22 @@ export async function displayItem(
 			);
 		}
 
-		embed.addField(`Obtainable from ${pageView}`, details.join('\n'));
+		embed.addField(`Obtainable from ${pageView}`, details.join("\n"));
 	}
 
 	embed.setTitle(
 		`${item.name} ${
-			_baseAtk ? `(ATK ${_baseAtk}` : _baseDef ? `(DEF ${_baseDef})` : _baseStab ? `(${_baseStab}%)` : ''
+			_baseAtk
+				? `(ATK ${_baseAtk})`
+				: _baseDef
+				? `(DEF ${_baseDef})`
+				: _baseStab
+				? `(${_baseStab}%)`
+				: ""
 		}`,
 	);
 
-	interaction.reply({ embeds: [embed] }).catch((e) => interaction.report(e, __filename));
+	interaction
+		.reply({ embeds: [embed] })
+		.catch((e) => interaction.report(e, __filename));
 }
