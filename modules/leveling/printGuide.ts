@@ -60,7 +60,7 @@ export async function printGuide(
 			guideFile.push(
 				` ${entry.mini || entry.norm ? "│" : " "}   ${
 					entry.boss.length > 0 ? "│" : " "
-				}   Defeats: ${mainEntry.count} - ${mainEntry.countWb} times`,
+				}   Defeats: ${mainEntry.count} - ${mainEntry.countWithoutBonus} times`,
 			);
 			guideFile.push(
 				` ${entry.mini || entry.norm ? "│" : " "}   ${
@@ -116,7 +116,7 @@ export async function printGuide(
 			guideFile.push(
 				` ${entry.norm ? "│" : " "}   ${
 					entry.mini.length > 0 ? "│" : " "
-				}   Defeats: ${mainEntry.count} - ${mainEntry.countWb} times`,
+				}   Defeats: ${mainEntry.count} - ${mainEntry.countWithoutBonus} times`,
 			);
 			guideFile.push(
 				` ${entry.norm ? "│" : " "}   ${entry.mini.length > 0 ? "│" : " "}`,
@@ -168,7 +168,7 @@ export async function printGuide(
 			guideFile.push(
 				`     ${entry.norm.length > 0 ? "│" : " "}   Defeats: ${
 					mainEntry.count
-				} - ${mainEntry.countWb} times`,
+				} - ${mainEntry.countWithoutBonus} times`,
 			);
 			guideFile.push(`     ${entry.norm.length > 0 ? "│" : " "}`);
 			guideFile.push(`     ${entry.norm.length > 0 ? "└── [Others]" : ""}`);

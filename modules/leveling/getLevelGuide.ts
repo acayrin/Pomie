@@ -21,7 +21,7 @@ type GuideResult = {
 			type: string;
 			level: number;
 			count: number;
-			countWb: number;
+			countWithoutBonus: number;
 		}[];
 		mini: {
 			id: string;
@@ -29,7 +29,7 @@ type GuideResult = {
 			type: string;
 			level: number;
 			count: number;
-			countWb: number;
+			countWithoutBonus: number;
 		}[];
 		norm: {
 			id: string;
@@ -37,7 +37,7 @@ type GuideResult = {
 			type: string;
 			level: number;
 			count: number;
-			countWb: number;
+			countWithoutBonus: number;
 		}[];
 	}[];
 };
@@ -54,7 +54,7 @@ type GuideLevelModel = {
 		type: string;
 		level: number;
 		count: number;
-		countWb: number;
+		countWithoutBonus: number;
 	}[];
 	mini: {
 		id: string;
@@ -63,7 +63,7 @@ type GuideLevelModel = {
 		type: string;
 		level: number;
 		count: number;
-		countWb: number;
+		countWithoutBonus: number;
 	}[];
 	norm: {
 		id: string;
@@ -72,7 +72,7 @@ type GuideLevelModel = {
 		type: string;
 		level: number;
 		count: number;
-		countWb: number;
+		countWithoutBonus: number;
 	}[];
 };
 export type GuideResults = GuideResult | GuideResultError;
@@ -231,62 +231,53 @@ export function getLevelGuide(
 				// construct level model
 				levelModel = {
 					// boss model
-					boss:
-						currentLevelBoss.length > 0
-							? currentLevelBoss.map((entry) => {
-									return {
-										id: entry.monster.id,
-										name: entry.monster.name,
-										level: entry.monster.level,
-										exp: entry.expWithBonus,
-										type: entry.monster.type,
-										count: Math.round(
-											calculateExpAmount(currentLevel) / entry.expWithBonus,
-										),
-										countWb: Math.round(
-											calculateExpAmount(currentLevel) / entry.expWithoutBonus,
-										),
-									};
-							  })
-							: undefined,
+					boss: currentLevelBoss.map((entry) => {
+						return {
+							id: entry.monster.id,
+							name: entry.monster.name,
+							level: entry.monster.level,
+							exp: entry.expWithBonus,
+							type: entry.monster.type,
+							count: Math.round(
+								calculateExpAmount(currentLevel) / entry.expWithBonus,
+							),
+							countWithoutBonus: Math.round(
+								calculateExpAmount(currentLevel) / entry.expWithoutBonus,
+							),
+						};
+					}),
 					// miniboss model
-					mini:
-						currentLevelMini.length > 0
-							? currentLevelMini.map((entry) => {
-									return {
-										id: entry.monster.id,
-										name: entry.monster.name,
-										level: entry.monster.level,
-										exp: entry.expWithBonus,
-										type: entry.monster.type,
-										count: Math.round(
-											calculateExpAmount(currentLevel) / entry.expWithBonus,
-										),
-										countWb: Math.round(
-											calculateExpAmount(currentLevel) / entry.expWithoutBonus,
-										),
-									};
-							  })
-							: undefined,
+					mini: currentLevelMini.map((entry) => {
+						return {
+							id: entry.monster.id,
+							name: entry.monster.name,
+							level: entry.monster.level,
+							exp: entry.expWithBonus,
+							type: entry.monster.type,
+							count: Math.round(
+								calculateExpAmount(currentLevel) / entry.expWithBonus,
+							),
+							countWithoutBonus: Math.round(
+								calculateExpAmount(currentLevel) / entry.expWithoutBonus,
+							),
+						};
+					}),
 					// normal monster model
-					norm:
-						currentLevelNorm.length > 0
-							? currentLevelNorm.map((entry) => {
-									return {
-										id: entry.monster.id,
-										name: entry.monster.name,
-										level: entry.monster.level,
-										exp: entry.expWithBonus,
-										type: entry.monster.type,
-										count: Math.round(
-											calculateExpAmount(currentLevel) / entry.expWithBonus,
-										),
-										countWb: Math.round(
-											calculateExpAmount(currentLevel) / entry.expWithoutBonus,
-										),
-									};
-							  })
-							: undefined,
+					norm: currentLevelNorm.map((entry) => {
+						return {
+							id: entry.monster.id,
+							name: entry.monster.name,
+							level: entry.monster.level,
+							exp: entry.expWithBonus,
+							type: entry.monster.type,
+							count: Math.round(
+								calculateExpAmount(currentLevel) / entry.expWithBonus,
+							),
+							countWithoutBonus: Math.round(
+								calculateExpAmount(currentLevel) / entry.expWithoutBonus,
+							),
+						};
+					}),
 				};
 
 				// store model on mod initilization
@@ -348,7 +339,28 @@ export function getLevelGuide(
 		}
 
 		// store some data
-		const guideData = {
+		const levelRangeData: {
+			levels: number[];
+			fixedLevel: number;
+			fixedBossData: {
+				[key: string]: {
+					battleCount: number;
+					battleCountWithoutBonus: number;
+				};
+			};
+			fixedMiniData: {
+				[key: string]: {
+					battleCount: number;
+					battleCountWithoutBonus: number;
+				};
+			};
+			fixedNormData: {
+				[key: string]: {
+					battleCount: number;
+					battleCountWithoutBonus: number;
+				};
+			};
+		} = {
 			// list of levels
 			levels: Array.from(Object.keys(levelMap)).map((key) => Number(key)),
 			// starting level in which preceeding ones have the same value
@@ -356,36 +368,27 @@ export function getLevelGuide(
 				.map((key) => Number(key))
 				.at(0),
 			// fixed boss data when multiple levels have the same value
-			fixedBossData: {
-				battleCount: 0,
-				battleCountWb: 0,
-			},
+			fixedBossData: {},
 			// fixed miniboss data when multiple levels have the same value
-			fixedMiniData: {
-				battleCount: 0,
-				battleCountWb: 0,
-			},
+			fixedMiniData: {},
 			// fixed normal monster data when multiple levels have the same value
-			fixedNormData: {
-				battleCount: 0,
-				battleCountWb: 0,
-			},
+			fixedNormData: {},
 		};
 
 		// loop through list of levels
 		let index = -1;
-		while (++index < guideData.levels.length) {
+		while (++index < levelRangeData.levels.length) {
 			// current level data
 			const currentLevel = {
 				// level number
-				levelNum: guideData.levels.at(index),
+				levelNum: levelRangeData.levels.at(index),
 				// level monster data
-				levelData: levelMap[guideData.levels.at(index)],
+				levelData: levelMap[levelRangeData.levels.at(index)],
 				// level exp bonus
 				levelExpBonus:
 					(guideBonus || 0) +
 					calculateExpBonus(
-						guideData.levels.at(index),
+						levelRangeData.levels.at(index),
 						mod,
 						guideBonus === undefined,
 					),
@@ -394,14 +397,14 @@ export function getLevelGuide(
 			// next level data
 			const nextLevel = {
 				// level number
-				levelNum: guideData.levels.at(index + 1),
+				levelNum: levelRangeData.levels.at(index + 1),
 				// level monster data
-				levelData: levelMap[guideData.levels.at(index + 1)],
+				levelData: levelMap[levelRangeData.levels.at(index + 1)],
 				// level exp bonus
 				levelExpBonus:
 					(guideBonus || 0) +
 					calculateExpBonus(
-						guideData.levels.at(index + 1),
+						levelRangeData.levels.at(index + 1),
 						mod,
 						guideBonus === undefined,
 					),
@@ -411,68 +414,66 @@ export function getLevelGuide(
 			if (!nextLevel.levelData) continue;
 
 			// stack up matching data
-			{
-				// boss battle count
-				guideData.fixedBossData.battleCount +=
-					currentLevel.levelData.boss && currentLevel.levelData.boss.length > 0
-						? currentLevel.levelData.boss.at(0).count > 0
-							? currentLevel.levelData.boss.at(0).count
-							: 1
-						: 0;
-				guideData.fixedBossData.battleCountWb +=
-					currentLevel.levelData.boss && currentLevel.levelData.boss.length > 0
-						? currentLevel.levelData.boss.at(0).countWb > 0
-							? currentLevel.levelData.boss.at(0).countWb
-							: 1
-						: 0;
+			// boss battle count
+			currentLevel.levelData.boss.map((boss) => {
+				levelRangeData.fixedBossData[boss.id] = {
+					battleCount: 0,
+					battleCountWithoutBonus: 0,
+				};
+				levelRangeData.fixedBossData[boss.id].battleCount +=
+					boss.count > 0 ? boss.count : 1;
+			});
+			currentLevel.levelData.boss.map((boss) => {
+				levelRangeData.fixedBossData[boss.id].battleCountWithoutBonus +=
+					boss.countWithoutBonus > 0 ? boss.countWithoutBonus : 1;
+			});
 
-				// miniboss battle count
-				guideData.fixedMiniData.battleCount +=
-					currentLevel.levelData.mini && currentLevel.levelData.mini.length > 0
-						? currentLevel.levelData.mini.at(0).count > 0
-							? currentLevel.levelData.mini.at(0).count
-							: 1
-						: 0;
-				guideData.fixedMiniData.battleCountWb +=
-					currentLevel.levelData.mini && currentLevel.levelData.mini.length > 0
-						? currentLevel.levelData.mini.at(0).countWb > 0
-							? currentLevel.levelData.mini.at(0).countWb
-							: 1
-						: 0;
+			// miniboss battle count
+			currentLevel.levelData.mini.map((mini) => {
+				levelRangeData.fixedMiniData[mini.id] = {
+					battleCount: 0,
+					battleCountWithoutBonus: 0,
+				};
+				levelRangeData.fixedMiniData[mini.id].battleCount +=
+					mini.count > 0 ? mini.count : 1;
+			});
+			currentLevel.levelData.mini.map((mini) => {
+				levelRangeData.fixedMiniData[mini.id].battleCountWithoutBonus +=
+					mini.countWithoutBonus > 0 ? mini.countWithoutBonus : 1;
+			});
 
-				// normal monster battle count
-				guideData.fixedNormData.battleCount +=
-					currentLevel.levelData.norm && currentLevel.levelData.norm.length > 0
-						? currentLevel.levelData.norm.at(0).count > 0
-							? currentLevel.levelData.norm.at(0).count
-							: 1
-						: 0;
-				guideData.fixedNormData.battleCountWb +=
-					currentLevel.levelData.norm && currentLevel.levelData.norm.length > 0
-						? currentLevel.levelData.norm.at(0).countWb > 0
-							? currentLevel.levelData.norm.at(0).countWb
-							: 1
-						: 0;
-			}
+			// normal monster battle count
+			currentLevel.levelData.norm.map((norm) => {
+				levelRangeData.fixedNormData[norm.id] = {
+					battleCount: 0,
+					battleCountWithoutBonus: 0,
+				};
+				levelRangeData.fixedNormData[norm.id].battleCount +=
+					norm.count > 0 ? norm.count : 1;
+			});
+			currentLevel.levelData.norm.map((norm) => {
+				levelRangeData.fixedNormData[norm.id].battleCountWithoutBonus +=
+					norm.countWithoutBonus > 0 ? norm.countWithoutBonus : 1;
+			});
 
 			// validation between 2 levels
 			const validate = {
 				// if 2 levels have any different monster entry
 				differentMonster:
-					currentLevel.levelData.boss?.at(0)?.id !==
-						nextLevel.levelData.boss?.at(0)?.id ||
-					currentLevel.levelData.mini?.at(0)?.id !==
-						nextLevel.levelData.mini?.at(0)?.id ||
-					currentLevel.levelData.norm?.at(0)?.id !==
-						nextLevel.levelData.norm?.at(0)?.id,
+					currentLevel.levelData.boss?.[0]?.id !==
+						nextLevel.levelData.boss?.[0]?.id ||
+					currentLevel.levelData.mini?.[0]?.id !==
+						nextLevel.levelData.mini?.[0]?.id ||
+					currentLevel.levelData.norm?.[0]?.id !==
+						nextLevel.levelData.norm?.[0]?.id,
 
 				// if 2 levels have different exp bonus
 				differentExpBonus:
-					calculateExpBonus(currentLevel.levelNum, mod) !==
-					calculateExpBonus(nextLevel.levelNum, mod),
+					calculateExpBonus(currentLevel.levelNum) !==
+					calculateExpBonus(nextLevel.levelNum),
 
 				// if 2 different level state
-				differentLevel: currentLevel.levelNum !== guideData.fixedLevel,
+				differentLevel: currentLevel.levelNum !== levelRangeData.fixedLevel,
 
 				// if at last level
 				atLastLevel: currentLevel.levelNum + 1 === endLevel,
@@ -492,56 +493,54 @@ export function getLevelGuide(
 							mod,
 							guideBonus === undefined,
 						),
-					startLevel: guideData.fixedLevel,
+					startLevel: levelRangeData.fixedLevel,
 					endLevel: currentLevel.levelNum,
-					boss: currentLevel.levelData.boss
-						? currentLevel.levelData.boss.map((entry) => {
-								return {
-									id: entry.id,
-									type: entry.type,
-									name: entry.name,
-									level: entry.level,
-									count: guideData.fixedBossData.battleCount,
-									countWb: guideData.fixedBossData.battleCountWb,
-								};
-						  })
-						: undefined,
-					mini: currentLevel.levelData.mini
-						? currentLevel.levelData.mini.map((entry) => {
-								return {
-									id: entry.id,
-									type: entry.type,
-									name: entry.name,
-									level: entry.level,
-									count: guideData.fixedMiniData.battleCount,
-									countWb: guideData.fixedMiniData.battleCountWb,
-								};
-						  })
-						: undefined,
-					norm: currentLevel.levelData.norm
-						? currentLevel.levelData.norm.map((entry) => {
-								return {
-									id: entry.id,
-									type: entry.type,
-									name: entry.name,
-									level: entry.level,
-									count: guideData.fixedNormData.battleCount,
-									countWb: guideData.fixedNormData.battleCountWb,
-								};
-						  })
-						: undefined,
+					boss: currentLevel.levelData.boss.map((entry) => {
+						return {
+							id: entry.id,
+							type: entry.type,
+							name: entry.name,
+							level: entry.level,
+							exp: entry.exp,
+							count: levelRangeData.fixedBossData[entry.id].battleCount,
+							countWithoutBonus:
+								levelRangeData.fixedBossData[entry.id].battleCountWithoutBonus,
+						};
+					}),
+					mini: currentLevel.levelData.mini.map((entry) => {
+						return {
+							id: entry.id,
+							type: entry.type,
+							name: entry.name,
+							level: entry.level,
+							exp: entry.exp,
+							count: levelRangeData.fixedMiniData[entry.id].battleCount,
+							countWithoutBonus:
+								levelRangeData.fixedMiniData[entry.id].battleCountWithoutBonus,
+						};
+					}),
+					norm: currentLevel.levelData.norm.map((entry) => {
+						return {
+							id: entry.id,
+							type: entry.type,
+							name: entry.name,
+							level: entry.level,
+							exp: entry.exp,
+							count: levelRangeData.fixedNormData[entry.id].battleCount,
+							countWithoutBonus:
+								levelRangeData.fixedNormData[entry.id].battleCountWithoutBonus,
+						};
+					}),
 				});
 
 				// reset data
-				{
-					guideData.fixedLevel = nextLevel.levelNum;
-					guideData.fixedBossData.battleCount = 0;
-					guideData.fixedBossData.battleCountWb = 0;
-					guideData.fixedMiniData.battleCount = 0;
-					guideData.fixedMiniData.battleCountWb = 0;
-					guideData.fixedNormData.battleCount = 0;
-					guideData.fixedNormData.battleCountWb = 0;
-				}
+				levelRangeData.fixedLevel = nextLevel.levelNum;
+				levelRangeData.fixedBossData = {};
+				levelRangeData.fixedBossData = {};
+				levelRangeData.fixedMiniData = {};
+				levelRangeData.fixedMiniData = {};
+				levelRangeData.fixedNormData = {};
+				levelRangeData.fixedNormData = {};
 			}
 		}
 
