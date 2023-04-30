@@ -21,7 +21,7 @@ Required additional NPM package(s)
 
 Mod configuration is stored in `mods_data/Pomie`
 
-This project uses **Firebase Realtime** database as backend, data is scraped from [Coryn.club](https://coryn.club) via [scraper](https://github.com/acayrin/webscrapingthingy) (will be updated soon)
+This project uses **Firebase Realtime** database as backend, data is scraped from [Coryn.club](https://coryn.club)
 
 ### thanks
 
