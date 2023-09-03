@@ -1,3 +1,5 @@
+## Inactive due to lack of interest in the game
+
 ## Pomie
 
 #### Toram Online helper within Discord
